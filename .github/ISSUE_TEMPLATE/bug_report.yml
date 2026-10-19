@@ -1,0 +1,52 @@
+name: Bug report
+description: Something does not work or the game behaves differently than expected.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Security problems go through private reporting (the repository's **Security** tab), not public issues.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead. Screenshots help.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Enable the mod in the Paradox launcher
+        2. Start a game as ...
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The version of this project you use (release or commit).
+    validations:
+      required: true
+  - type: input
+    id: game-version
+    attributes:
+      label: Game version
+      description: As shown in the launcher, e.g. `1.37.5`.
+    validations:
+      required: true
+  - type: textarea
+    id: mods
+    attributes:
+      label: Other mods and plugins
+      description: Enabled mods and Anvil plugins with their versions, or "none".
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant lines from `error.log` or `anvil/anvil.log`. Check them for anything you do not want to share, such as your Windows user name in paths.
+      render: text

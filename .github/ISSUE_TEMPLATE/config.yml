@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/happy-dwarf-team/.github/blob/main/SECURITY.md
+    about: Report privately through the repository's Security tab.
+  - name: Anvil (loader) issues
+    url: https://github.com/happy-dwarf-team/anvil/issues/new/choose
+    about: Problems with Anvil itself or with loading plugins.
+  - name: Install guide and documentation
+    url: https://anvil.happydwarf.dev
+    about: How to install Anvil and plugins, and how to write one.
