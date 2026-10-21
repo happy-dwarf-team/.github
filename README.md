@@ -7,3 +7,5 @@ Organization-wide files for [Happy Dwarf Team](https://github.com/happy-dwarf-te
   [`SECURITY.md`](SECURITY.md), [`SUPPORT.md`](SUPPORT.md), the issue forms and the
   pull request template in [`.github/`](.github) are the defaults for every
   repository of the organization that does not have its own file of that kind.
+- [`docs/workshop-pages.md`](docs/workshop-pages.md) is the convention for Steam Workshop titles and
+  descriptions of the team's mods and Anvil plugins.
