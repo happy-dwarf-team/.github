@@ -511,12 +511,12 @@ function Page404() {
 
 const VARIANTS = [
   { key: 'A', name: 'Stacked groups', render: VariantA },
-  { key: 'B', name: 'Ledger', render: VariantB },
+  { key: 'B', name: 'Ledger (picked)', render: VariantB },
   { key: 'C', name: 'Ecosystem map', render: VariantC },
 ];
 const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
 const fromUrl = new URLSearchParams(location.search).get('variant') || (location.hash.match(/^#variant-([abc])$/i) || [])[1];
-let idx = Math.max(0, VARIANTS.findIndex((v) => v.key === String(fromUrl || store.get('hd-proto-variant') || 'A').toUpperCase()));
+let idx = Math.max(0, VARIANTS.findIndex((v) => v.key === String(fromUrl || store.get('hd-proto-variant') || 'B').toUpperCase()));
 let show404 = false;
 let rm = store.get('hd-proto-rm') === '1';
 
