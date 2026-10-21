@@ -12,6 +12,16 @@ How Happy Dwarf Team mods and Anvil plugins present themselves on the Steam Work
   - no "Anvil": players don't need to know the loader's name to understand the mod.
 - **Where it lives:** the title is the descriptor's `name`, so it is the same on Steam and in the launcher.
 
+## Thumbnail
+
+**Anvil plugins** use a generated preview image, never a hand-made placeholder:
+- generate it with [`tools/workshop-thumbnail`](../tools/workshop-thumbnail) from the plugin's icon on the Anvil website (`src/assets/plugins/<id>.svg` in anvil-website), with the title's name and subtitle;
+- commit it as `workshop/thumbnail.png`.
+
+The result follows the website's look, shows the plugin icon and carries the Happy Dwarf Team logo. A plugin without an icon gets one on the website first.
+
+Content mods keep their own artwork.
+
 ## Tone
 
 - **Plain first, joke second.** Every section starts with something a player understands without knowing how EU4 works inside.
