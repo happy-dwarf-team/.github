@@ -5,7 +5,7 @@ for `happydwarf.dev`. Not production code; this branch is never merged.
 
 `index.html` is the body of a single page (published as a private claude.ai Artifact, which adds the
 document skeleton). Three structurally different variants of the home page plus the 404 page, switched
-from the floating bar at the bottom (or the ← / → keys); "No motion" simulates `prefers-reduced-motion`.
+from the floating bar at the bottom (or the ← / → keys); "No motion" simulates `prefers-reduced-motion`, and the plugin button adds made-up example plugins (all, or capped at five on the hub with a link to the Anvil catalog) to test how the Anvil group grows.
 
 - **A · Stacked groups**: centred hero, each project group a heading and a card grid, Anvil full width on top.
 - **B · Ledger**: left-aligned hero with a large logo, each group a sticky rail beside dense project rows.

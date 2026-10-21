@@ -237,6 +237,18 @@ section { scroll-margin-top: 5rem; }
 .vc .principles li { padding-left: 1rem; border-left: 2px solid var(--forge-accent); }
 .vc .paths { grid-template-columns: 1fr; }
 
+/* Many plugins */
+.more { align-self: flex-start; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.6rem 1rem; border: 1px dashed var(--forge-border); border-radius: var(--forge-radius); color: var(--forge-accent-strong); font-weight: 500; text-decoration: none; transition: border-color 180ms var(--forge-ease); }
+.more:hover { border-color: var(--forge-accent); color: var(--forge-white); }
+.more:hover .arrow { transform: translateX(3px); }
+.vb .rows .more { margin-top: 0.75rem; }
+.proto-note { padding: 0.5rem 0.8rem; border-radius: 0.5rem; background: var(--proto-bg); color: var(--proto-fg); font: 500 0.8rem/1.4 system-ui, sans-serif; }
+.vb .rows .proto-note { order: -1; margin-bottom: 0.75rem; }
+.vc .tree.wide { grid-template-columns: 1fr; }
+.vc .tree.wide .branches { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); padding: 1rem 0 0; margin-top: 0.25rem; border-top: 2px solid var(--forge-border); }
+.vc .tree.wide .branches::before, .vc .tree.wide .branches .card::before { display: none; }
+.vc .tree.wide .branch-label { grid-column: 1 / -1; }
+
 /* ---------- 404 ---------- */
 .v404 { display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; padding-block: 6rem 3rem; max-width: 40rem; }
 .v404 .code { font: 700 clamp(3.5rem, 2rem + 8vw, 6.5rem)/1 var(--font-mono); color: var(--forge-accent); letter-spacing: -0.04em; }
@@ -295,6 +307,7 @@ html.sim-rm .link:hover .arrow, html.sim-rm .btn:hover .arrow { transform: none;
   <span class="label" id="proto-label" aria-live="polite"></span>
   <button type="button" id="proto-next" aria-label="Next variant">→</button>
   <span class="sep"></span>
+  <button type="button" id="proto-pm" title="How many Anvil plugins">3 plugins</button>
   <button type="button" id="proto-404" aria-pressed="false">404</button>
   <button type="button" id="proto-rm" aria-pressed="false" title="Simulate prefers-reduced-motion">No motion</button>
 </div>
@@ -311,6 +324,7 @@ const ICONS = {
   widescreen: '<path fill="currentColor" fill-rule="evenodd" d="M2 8h28v16H2zM4.5 10.5v11h23v-11z"/><path fill="currentColor" d="M7 16l4.5-3.8v7.6zM25 16l-4.5-3.8v7.6z"/><path fill="#16171a" opacity=".35" d="M11.5 14.5h9v3h-9z"/>',
   proper2k: '<path fill="currentColor" fill-rule="evenodd" d="M3 4.5h26v19H3zM5.5 10v11h21V10z"/><path fill="#16171a" opacity=".35" d="M3 4.5h26v5.5H3z"/><path fill="currentColor" d="M12 26h8v2.5h-8z"/><path fill="currentColor" opacity=".55" d="M8 13h7v2H8zM8 17h11v2H8z"/>',
 };
+const arrow = '<span class="arrow" aria-hidden="true">→</span>';
 const GROUPS = [
   { id: 'anvil-ecosystem', title: 'Anvil ecosystem', intro: 'Anvil loads native plugins into the game; the plugins do what mods can’t.' },
   { id: 'mod-tools', title: 'Tools for mod authors', intro: 'For people who make mods: see your interface as you write it, publish with one command.' },
@@ -326,12 +340,12 @@ const P = [
   { id: 'tongs', group: 'anvil-ecosystem', order: 2, name: 'Tongs', icon: 'tongs', version: '0.14.0',
     summary: 'Lets scripts and agents control a running game: read its state, take screenshots, use keyboard and mouse.',
     primary: { href: 'https://anvil.happydwarf.dev/plugins/tongs/', label: 'Plugin page' }, repo: GH + '/tongs' },
-  { id: 'template', group: 'anvil-ecosystem', order: 3, name: 'Plugin template', icon: 'template', status: 'Template',
+  { id: 'template', group: 'anvil-ecosystem', order: 99, starter: true, name: 'Plugin template', icon: 'template', status: 'Template',
     summary: 'Start your own Anvil plugin with build, CI checks and releases ready to go.',
     primary: { href: GH + '/anvil-plugin-template', label: 'Use this template' } },
   { id: 'etch', group: 'mod-tools', order: 0, name: 'Etch', icon: 'etch', version: '0.1.0',
     summary: 'A VS Code extension that previews EU4 interface mods: edit a <code>.gui</code> or <code>.gfx</code> file and see the window as the game draws it.',
-    primary: { href: 'https://marketplace.visualstudio.com/items?itemName=happy-dwarf-team.etch', label: 'VS Code Marketplace' }, repo: GH + '/etch' },
+    primary: { href: 'https://etch.happydwarf.dev', label: 'etch.happydwarf.dev' }, repo: GH + '/etch' },
   { id: 'pwp', group: 'mod-tools', order: 1, name: 'paradox-workshop-publish', icon: 'publish', version: '0.2.0',
     summary: 'Publish Paradox game mods to the Steam Workshop from GitHub Actions or your own PC, driven by the mod descriptor.',
     primary: { href: GH + '/paradox-workshop-publish', label: 'Read the README' } },
@@ -342,13 +356,45 @@ const P = [
     summary: 'A proper 2K interface for Anbennar. No longer maintained.',
     primary: { href: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3681465653', label: 'Steam Workshop' }, repo: GH + '/eu4-anbennar-proper-2k-ui' },
 ];
-const inGroup = (g) => P.filter((p) => p.group === g).sort((a, b) => a.order - b.order);
+ICONS.example = '<path fill="currentColor" d="M5 5h15v8H5z"/><path fill="#16171a" opacity=".35" d="M5 5h15v2.5H5z"/><path fill="currentColor" d="M20 7.5h5v3h-5zM11 13h3.5v15H11z"/>';
+const EXAMPLES = [
+  ['Hammer', 'Adds keyboard shortcuts for the actions you repeat most.', '0.4.1'],
+  ['Chisel', 'Makes autosaves smaller, so they take less time.', '0.2.0'],
+  ['Quench', 'Fewer stutters in the late game when many wars run at once.', '1.1.0'],
+  ['Whetstone', 'Sharper fonts on high-resolution monitors.', '0.7.3'],
+  ['Crucible', 'Shows script errors in game as they happen, with the file and line.', '0.3.0'],
+  ['Rivet', 'Keeps the map camera where you left it after loading a save.', '0.1.2'],
+  ['Lantern', 'Highlights provinces that changed since last month.', '0.5.0'],
+  ['Ingot', 'Exports trade and income numbers to CSV every year.', '0.9.4'],
+  ['Pickaxe', 'Finds the slowest event and decision scripts in your mod list.', '0.2.2'],
+].map(([name, summary, version], i) => ({ id: 'ex-' + name.toLowerCase(), group: 'anvil-ecosystem', order: 10 + i, example: true, name, icon: 'example', version,
+  summary, primary: { href: 'https://anvil.happydwarf.dev/plugins/', label: 'Plugin page' }, repo: GH }));
+const PLUGIN_MODES = [
+  { key: 'real', label: '3 plugins' },
+  { key: 'many', label: '11 plugins' },
+  { key: 'capped', label: '11, hub shows 5' },
+];
+let pm = 0;
+const CAP = 5;
+const pool = () => P.concat(PLUGIN_MODES[pm].key === 'real' ? [] : EXAMPLES);
+function inGroup(g) {
+  let items = pool().filter((p) => p.group === g).sort((a, b) => a.order - b.order);
+  if (g === 'anvil-ecosystem' && PLUGIN_MODES[pm].key === 'capped') {
+    const plugins = items.filter((p) => !p.featured && !p.starter);
+    items = items.filter((p) => p.featured).concat(plugins.slice(0, CAP), items.filter((p) => p.starter));
+  }
+  return items;
+}
+const pluginTotal = () => pool().filter((p) => p.group === 'anvil-ecosystem' && !p.featured && !p.starter).length;
+const more = (g) => g === 'anvil-ecosystem' && PLUGIN_MODES[pm].key === 'capped'
+  ? `<a class="more" href="https://anvil.happydwarf.dev/plugins/" rel="noopener">All ${pluginTotal()} plugins in the Anvil catalog ${arrow}</a>` : '';
+const exampleNote = (g) => g === 'anvil-ecosystem' && PLUGIN_MODES[pm].key !== 'real'
+  ? `<p class="proto-note">Prototype: Hammer, Chisel, Quench and the other hammer-icon plugins are made-up examples to test how the group grows. They do not exist.</p>` : '';
 const icon = (p, size = 28) => `<svg class="icon${p.icon === 'etch' ? ' etch' : ''}" width="${size}" height="${size}" viewBox="0 0 32 32" aria-hidden="true" focusable="false">${ICONS[p.icon]}</svg>`;
 const badge = (p) => p.version
   ? `<span class="badge version"><span class="sr-only">Latest version </span>v${p.version}</span>`
   : `<span class="badge">${p.status}</span>`;
 const ext = (href) => href.startsWith('http') ? ' rel="noopener"' : '';
-const arrow = '<span class="arrow" aria-hidden="true">→</span>';
 const links = (p, filled = false) => `<div class="links">
   ${filled ? `<a class="btn" href="${p.primary.href}"${ext(p.primary.href)}>${p.primary.label} ${arrow}</a>`
            : `<a class="link" href="${p.primary.href}"${ext(p.primary.href)}>${p.primary.label} ${arrow}</a>`}
@@ -399,7 +445,7 @@ function VariantA() {
     return `<section class="group" id="${g.id}" aria-labelledby="${g.id}-h">
       <div class="group-head"><h2 id="${g.id}-h">${g.title}</h2><p class="muted">${g.intro}</p></div>
       ${feat.map(card).join('')}
-      <div class="grid${rest.length >= 3 ? ' n3' : ''}">${rest.map(card).join('')}</div>
+      ${exampleNote(g.id)}<div class="grid${rest.length >= 3 ? ' n3' : ''}">${rest.map(card).join('')}</div>${more(g.id)}
     </section>`;
   }).join('');
   return `<div class="va">${header()}<main id="main" tabindex="-1">
@@ -416,8 +462,8 @@ function VariantB() {
   const groups = GROUPS.map((g) => {
     const items = inGroup(g.id);
     return `<section class="group" id="${g.id}" aria-labelledby="${g.id}-h">
-      <div class="rail"><h2 id="${g.id}-h">${g.title}</h2><p class="muted">${g.intro}</p><span class="count">${items.length} projects</span></div>
-      <div class="rows">${items.map((p) => `<article class="row${p.featured ? ' featured' : ''}${p.archived ? ' archived' : ''}">${icon(p, p.featured ? 44 : 32)}<h3><a href="${p.primary.href}">${p.name}</a></h3>${badge(p)}<p>${p.summary}</p>${links(p, p.featured)}</article>`).join('')}</div>
+      <div class="rail"><h2 id="${g.id}-h">${g.title}</h2><p class="muted">${g.intro}</p><span class="count">${g.id === 'anvil-ecosystem' ? pluginTotal() + ' plugins' : items.length + ' projects'}</span></div>
+      <div class="rows">${items.map((p) => `<article class="row${p.featured ? ' featured' : ''}${p.archived ? ' archived' : ''}">${icon(p, p.featured ? 44 : 32)}<h3><a href="${p.primary.href}">${p.name}</a></h3>${badge(p)}<p>${p.summary}</p>${links(p, p.featured)}</article>`).join('')}${more(g.id)}${exampleNote(g.id)}</div>
     </section>`;
   }).join('');
   return `<div class="vb">${header()}<main id="main" tabindex="-1"><div class="wrap">
@@ -439,8 +485,8 @@ function VariantC() {
     <section class="hero" id="top">${logo()}<div class="text"><h1>${H1}</h1><p class="lead">${LEAD} ${AUD}</p></div><a class="link jump" href="#projects">See the projects <span aria-hidden="true">↓</span></a></section>
     <div class="map" id="projects">
       <section class="zone" id="anvil-ecosystem" aria-labelledby="anvil-ecosystem-h">${zoneHead(g('anvil-ecosystem'))}
-        <div class="tree">${card(anvil).replace('<div class="body">', '').replace('</p></div>', '</p>')}
-          <div class="branches"><span class="branch-label">Plugins and starters</span>${plugins.map(card).join('')}</div></div>
+        ${exampleNote('anvil-ecosystem')}<div class="tree${plugins.length > 4 ? ' wide' : ''}">${card(anvil).replace('<div class="body">', '').replace('</p></div>', '</p>')}
+          <div class="branches"><span class="branch-label">Plugins and starters</span>${plugins.map(card).join('')}</div></div>${more('anvil-ecosystem')}
       </section>
       <div class="pair">
         <section class="zone" id="mod-tools" aria-labelledby="mod-tools-h">${zoneHead(g('mod-tools'))}<div class="stack">${inGroup('mod-tools').map(card).join('')}</div></section>
@@ -478,6 +524,7 @@ function render() {
   const v = VARIANTS[idx];
   document.getElementById('app').innerHTML = show404 ? Page404() : v.render();
   document.getElementById('proto-label').innerHTML = `${v.key}<span class="name"> · ${v.name}</span>${show404 ? ' · 404' : ''}`;
+  document.getElementById('proto-pm').textContent = PLUGIN_MODES[pm].label;
   document.getElementById('proto-404').setAttribute('aria-pressed', String(show404));
   document.getElementById('proto-rm').setAttribute('aria-pressed', String(rm));
   document.documentElement.classList.toggle('sim-rm', rm);
@@ -487,6 +534,7 @@ function render() {
 const go = (d) => { idx = (idx + d + VARIANTS.length) % VARIANTS.length; render(); };
 document.getElementById('proto-prev').onclick = () => go(-1);
 document.getElementById('proto-next').onclick = () => go(1);
+document.getElementById('proto-pm').onclick = () => { pm = (pm + 1) % PLUGIN_MODES.length; render(); };
 document.getElementById('proto-404').onclick = () => { show404 = !show404; render(); };
 document.getElementById('proto-rm').onclick = () => { rm = !rm; store.set('hd-proto-rm', rm ? '1' : '0'); render(); };
 document.addEventListener('keydown', (e) => {
