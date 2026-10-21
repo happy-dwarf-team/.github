@@ -11,3 +11,5 @@ Organization-wide files for [Happy Dwarf Team](https://github.com/happy-dwarf-te
   descriptions of the team's mods and Anvil plugins.
 - [`tools/workshop-thumbnail/`](tools/workshop-thumbnail) generates the Workshop preview image of an
   Anvil plugin in the Anvil website's style.
+- [`tools/social-preview/`](tools/social-preview) generates the GitHub social preview image of a
+  team repository in the same style.
