@@ -26,7 +26,7 @@ keep working.
 
 - [Proper 2K UI](https://github.com/happy-dwarf-team/eu4-anbennar-proper-2k-ui) (archived) – a proper 2K interface for the Anbennar mod
 - [Widescreen loading screens](https://github.com/happy-dwarf-team/eu4-anbennar-widescreen-loading-screens) – Anbennar loading screens that fit widescreen monitors
-- [Dwarven Knowledge patch](https://github.com/happy-dwarf-team/eu4-anbennar-proper-2k-ui-dwarven-knowledge-patch) – compatibility between Proper 2K UI and the Dwarven Knowledge submod
+- [Dwarven Knowledge patch](https://github.com/happy-dwarf-team/eu4-anbennar-proper-2k-ui-dwarven-knowledge-patch) (archived) – compatibility between Proper 2K UI and the Dwarven Knowledge submod
 
 ### Get involved
 
