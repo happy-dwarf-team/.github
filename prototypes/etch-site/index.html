@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
   PROTOTYPE — throwaway. Answers happy-dwarf-team/.github#13 "What do the Etch site's pages look like?"
-  Three structurally different variants of the etch.happydwarf.dev landing page, switchable with ?variant=A|B|C
+  Three structurally different variants (A–C) plus D, the user's pick, of the etch.happydwarf.dev landing page, switchable with ?variant=A|B|C
   and the floating bar (← → keys). The bar also simulates degradation: reduced motion, slow network (video never
   arrives), and shows the demo loop's state. All media are placeholders: no ffmpeg was available, so the "demo
   loop" is an animated SVG driven by the same play/pause rules as the real <video> (issue #8). No game art.
@@ -204,6 +204,16 @@ dialog.lightbox::backdrop { background: rgb(0 0 0 / .8); }
 .docs table { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .docs th, .docs td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--forge-border); vertical-align: top; }
 
+
+/* D: zoomable tour shots + actual-size lightbox */
+.zoom { all: unset; display: block; position: relative; cursor: zoom-in; border-radius: var(--forge-radius); }
+.zoom:focus-visible { outline: 2px solid var(--forge-accent); outline-offset: 3px; }
+.zoom:hover .shot { border-color: var(--forge-accent); }
+.zoom-hint { position: absolute; right: 10px; bottom: 10px; display: inline-flex; gap: 6px; align-items: center; min-height: 32px; padding: 0 10px; border-radius: 999px; background: rgb(22 23 26 / .86); border: 1px solid rgb(255 255 255 / .18); font: 600 .8rem var(--sans); color: var(--forge-text); }
+.zoom-hint svg { width: 14px; height: 14px; }
+.lb-body { overflow: auto; max-height: calc(100vh - 110px); }
+.lb-body.actual svg { width: 1600px; max-width: none; }
+
 /* prototype switcher: deliberately NOT dark forge */
 .proto { position: fixed; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 50; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: calc(100vw - 16px); padding: 6px 8px; border-radius: 16px; background: #fff7c2; color: #111; box-shadow: 0 8px 30px rgb(0 0 0 / .6); font: 600 13px/1.2 system-ui, sans-serif; border: 2px solid #111; }
 .proto button { min-height: 36px; min-width: 36px; border-radius: 10px; border: 1px solid #111; background: #fff; color: #111; font: 600 13px system-ui, sans-serif; cursor: pointer; padding: 0 10px; }
@@ -221,6 +231,7 @@ dialog.lightbox::backdrop { background: rgb(0 0 0 / .8); }
   <div class="lb-body" id="lb-body"></div>
   <div class="lb-bar">
     <p id="lb-cap"></p>
+    <button type="button" id="lb-actual" aria-pressed="false">Actual size</button>
     <button type="button" id="lb-prev">Previous</button>
     <button type="button" id="lb-next">Next</button>
     <button type="button" id="lb-close">Close</button>
@@ -285,6 +296,7 @@ const ICO = {
 };
 const ico = k => `<svg class="ico" viewBox="0 0 32 32" aria-hidden="true">${ICO[k]}</svg>`;
 const PLAY = `<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 2.5v11l9-5.5z"/></svg>`;
+const ZOOM = `<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.3 10.3 14 14M5 7h4M7 5v4" stroke="currentColor" stroke-width="1.8"/></svg>`;
 const PAUSE = `<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M3.5 2.5h3.2v11H3.5zM9.3 2.5h3.2v11H9.3z"/></svg>`;
 
 // ---------- placeholder media: abstract VS Code + Etch preview, no game art ----------
@@ -489,8 +501,39 @@ function VariantC() {
 </div>${footer()}`;
 }
 
+
+// ---------- Variant D: the pick — hero + feature tour from B (every shot zoomable), timeline from A, no Starlight ----------
+const D_ORDER = [0, 4, 1, 2, 3, 5];
+function VariantD() {
+  const tour = FEATURES.map((f, i) => { const s = SHOTS[D_ORDER[i]];
+    return `<div class="tour-row"><div><h3 style="font-size:1.35rem">${f.t}</h3><p class="muted">${f.d}</p></div>
+    <figure><button type="button" class="zoom" data-shot="${i}" aria-label="Enlarge screenshot: ${s.t}"><div class="shot">${shot(s.t, s.k)}</div><span class="zoom-hint" aria-hidden="true">${ZOOM}Enlarge</span></button><figcaption>${s.d}</figcaption></figure></div>`; }).join("");
+  return `${header([["#features", "Features"], ["#install", "Install"], ["#roadmap", "Roadmap"]])}
+<main id="top">
+  <section><div class="wrap split">
+    <div>
+      <div class="eyebrow">EU4 interface mods · VS Code</div>
+      <h1>Edit the <code style="font-size:.8em">.gui</code>. Watch the window.</h1>
+      <p class="muted" style="font-size:1.1rem">Etch draws the window under your cursor from the unsaved buffer, with the game's own art, in milliseconds.</p>
+      ${storeBtns(true)}${reqs}
+    </div>
+    ${loop("hero-loop", LOOP_TEXT)}
+  </div></section>
+  <section class="band" id="install" style="padding:32px 0"><div class="wrap" style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:center">
+    <div><h2 style="font-size:1.2rem;margin:0">Install in one line</h2><p class="muted" style="margin:0">Then open a <code>.gui</code> and run <b>Etch: Open Preview</b>. The full guide is in the <a href="${REPO}/blob/main/packages/extension/README.md">extension README</a>.</p></div>
+    ${cmd()}
+  </div></section>
+  <section id="features"><div class="wrap"><div class="eyebrow">In 0.1.0</div><h2>What the offline preview does</h2><div class="tour" style="margin-top:32px">${tour}</div><div style="margin-top:48px">${limitsBox()}</div></div></section>
+  <section id="roadmap" style="padding-top:0"><div class="wrap" style="max-width:760px">
+    <div class="eyebrow">Status</div><h2>Preview now, 1.0.0 later</h2>
+    <p class="muted">Etch is a preview release. The plan for 1.0.0 is the <a href="${REPO}/blob/main/docs/spec/v1.md">v1 specification</a>; version numbers are indicative.</p>
+    <ol class="timeline">${ROADMAP.map(r => `<li class="${r.s}"><span class="dot" aria-hidden="true"></span><h3>${r.m} · ${r.n} <span class="state">${r.s === "done" ? "done" : r.s === "now" ? "released · " + r.v : r.v}</span></h3><p>${r.p}</p></li>`).join("")}</ol>
+  </div></section>
+</main>${footer()}`;
+}
+
 // ---------- switcher ----------
-const VARIANTS = [["A", "Centred product page", VariantA], ["B", "Split hero + feature tour", VariantB], ["C", "Docs shell (Starlight-like)", VariantC]];
+const VARIANTS = [["A", "Centred product page", VariantA], ["B", "Split hero + feature tour", VariantB], ["C", "Docs shell (Starlight-like)", VariantC], ["D", "Pick: B hero + zoomable tour, A timeline", VariantD]];
 const qs = new URLSearchParams(location.search);
 let vi = Math.max(0, VARIANTS.findIndex(v => v[0] === (qs.get("variant") || "A").toUpperCase()));
 SIM.rm = qs.get("rm") === "1"; SIM.slow = qs.get("slow") === "1";
@@ -528,7 +571,8 @@ document.addEventListener("visibilitychange", () => loops.forEach((s, el) => { i
 
 // copy buttons + lightbox (variant A)
 const lb = document.getElementById("lb"); let lbi = 0, lbFrom = null;
-function showShot(i) { lbi = (i + SHOTS.length) % SHOTS.length; document.getElementById("lb-body").innerHTML = shot(SHOTS[lbi].t, SHOTS[lbi].k); document.getElementById("lb-cap").innerHTML = `<b>${SHOTS[lbi].t}.</b> ${SHOTS[lbi].d} <span class="muted">(${lbi + 1} of ${SHOTS.length})</span>`; }
+const lbOrder = () => VARIANTS[vi][0] === "D" ? D_ORDER : SHOTS.map((_, i) => i);
+function showShot(i) { lbi = (i + SHOTS.length) % SHOTS.length; const s = SHOTS[lbOrder()[lbi]]; document.getElementById("lb-body").innerHTML = shot(s.t, s.k); document.getElementById("lb-cap").innerHTML = `<b>${s.t}.</b> ${s.d} <span class="muted">(${lbi + 1} of ${SHOTS.length})</span>`; }
 document.addEventListener("click", e => {
   const c = e.target.closest("[data-copy]"); if (c) { Promise.resolve(navigator.clipboard?.writeText(c.dataset.copy)).catch(() => getSelection().selectAllChildren(c.previousElementSibling)); c.textContent = "Copied"; setTimeout(() => c.textContent = "Copy", 1500); }
   const t = e.target.closest("[data-shot]"); if (t) { lbFrom = t; showShot(+t.dataset.shot); lb.showModal(); document.getElementById("lb-close").focus(); }
@@ -536,6 +580,7 @@ document.addEventListener("click", e => {
 document.getElementById("lb-prev").onclick = () => showShot(lbi - 1);
 document.getElementById("lb-next").onclick = () => showShot(lbi + 1);
 document.getElementById("lb-close").onclick = () => lb.close();
+document.getElementById("lb-actual").onclick = e => { const on = document.getElementById("lb-body").classList.toggle("actual"); e.currentTarget.setAttribute("aria-pressed", on); e.currentTarget.textContent = on ? "Fit to screen" : "Actual size"; };
 lb.addEventListener("close", () => lbFrom?.focus());
 lb.addEventListener("keydown", e => { if (e.key === "ArrowLeft") showShot(lbi - 1); if (e.key === "ArrowRight") showShot(lbi + 1); });
 lb.addEventListener("click", e => { if (e.target === lb) lb.close(); });
