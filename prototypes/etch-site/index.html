@@ -128,7 +128,7 @@ section { padding: clamp(48px, 7vw, 88px) 0; }
 .thumbs { display: grid; gap: 14px; grid-template-columns: 1fr; }
 @media (min-width: 560px) { .thumbs { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 960px) { .thumbs { grid-template-columns: repeat(3, 1fr); } }
-.thumb { all: unset; cursor: zoom-in; display: block; border-radius: var(--forge-radius); }
+.thumb { all: unset; cursor: zoom-in; display: block; width: 100%; border-radius: var(--forge-radius); }
 .thumb:focus-visible { outline: 2px solid var(--forge-accent); outline-offset: 3px; }
 .thumb .shot { border: 1px solid var(--forge-border); border-radius: var(--forge-radius); overflow: hidden; aspect-ratio: 16/9; transition: border-color 180ms; }
 .thumb:hover .shot { border-color: var(--forge-accent); }
@@ -206,7 +206,7 @@ dialog.lightbox::backdrop { background: rgb(0 0 0 / .8); }
 
 
 /* D: zoomable tour shots + actual-size lightbox */
-.zoom { all: unset; display: block; position: relative; cursor: zoom-in; border-radius: var(--forge-radius); }
+.zoom { all: unset; display: block; width: 100%; position: relative; cursor: zoom-in; border-radius: var(--forge-radius); }
 .zoom:focus-visible { outline: 2px solid var(--forge-accent); outline-offset: 3px; }
 .zoom:hover .shot { border-color: var(--forge-accent); }
 .zoom-hint { position: absolute; right: 10px; bottom: 10px; display: inline-flex; gap: 6px; align-items: center; min-height: 32px; padding: 0 10px; border-radius: 999px; background: rgb(22 23 26 / .86); border: 1px solid rgb(255 255 255 / .18); font: 600 .8rem var(--sans); color: var(--forge-text); }
@@ -244,6 +244,7 @@ dialog.lightbox::backdrop { background: rgb(0 0 0 / .8); }
   <button type="button" class="x" id="p-more" aria-expanded="false">Sim</button>
   <button type="button" class="opt" id="p-rm" aria-pressed="false">Reduced motion</button>
   <button type="button" class="opt" id="p-slow" aria-pressed="false">Slow network</button>
+  <button type="button" class="opt" id="p-save" aria-pressed="false">Save-Data</button>
   <span class="state opt" id="p-state" aria-live="polite">loop: —</span>
 </div>
 
@@ -352,7 +353,8 @@ function loop(id, caption, opts = {}) {
 }
 const LOOP_TEXT = "A <code>.gui</code> file is open on the left. A button's size is changed in the editor and the window on the right redraws at once; the edited widget stays outlined.";
 
-const SIM = { rm: false, slow: false };
+const SIM = { rm: false, slow: false, save: false };
+function saveData() { return SIM.save || !!navigator.connection?.saveData; }
 const loops = new Map();
 function reducedMotion() { return SIM.rm || matchMedia("(prefers-reduced-motion: reduce)").matches; }
 function setLoopState(el, st) {
@@ -362,8 +364,8 @@ function setLoopState(el, st) {
   const btn = el.querySelector(".loop-btn"), note = el.querySelector(".loop-note");
   btn.disabled = st === "loading";
   btn.innerHTML = st === "playing" ? `${PAUSE}<span>Pause</span>` : st === "loading" ? `<span>Loading…</span>` : `${PLAY}<span>Play</span>`;
-  note.hidden = !(st === "poster-rm" || st === "loading" || st === "stalled");
-  note.textContent = st === "poster-rm" ? "Reduced motion: poster shown" : st === "loading" ? "Loading video…" : st === "stalled" ? "Video unavailable — poster and description stay" : "";
+  note.hidden = !(st === "poster-rm" || st === "poster-save" || st === "loading" || st === "stalled");
+  note.textContent = st === "poster-rm" ? "Reduced motion: poster shown" : st === "poster-save" ? "Data saver on: press Play" : st === "loading" ? "Loading video…" : st === "stalled" ? "Video unavailable — poster and description stay" : "";
   renderState();
 }
 function tryPlay(el) {
@@ -378,6 +380,7 @@ function decide(el) {
   const s = loops.get(el);
   if (s.userPaused) return setLoopState(el, s.loaded ? "paused" : "poster");
   if (reducedMotion() && !s.userPlayed) return setLoopState(el, "poster-rm");
+  if (saveData() && !s.userPlayed) return setLoopState(el, "poster-save");
   if (!s.visible) return setLoopState(el, s.loaded ? "offscreen" : "poster");
   if (s.state === "stalled") return;
   tryPlay(el);
@@ -506,7 +509,7 @@ function VariantC() {
 const D_ORDER = [0, 4, 1, 2, 3, 5];
 function VariantD() {
   const tour = FEATURES.map((f, i) => { const s = SHOTS[D_ORDER[i]];
-    return `<div class="tour-row"><div><h3 style="font-size:1.35rem">${f.t}</h3><p class="muted">${f.d}</p></div>
+    return `<div class="tour-row"><div><div class="eyebrow">${String(i + 1).padStart(2, "0")}</div><h3 style="font-size:1.35rem">${f.t}</h3><p class="muted">${f.d}</p></div>
     <figure><button type="button" class="zoom" data-shot="${i}" aria-label="Enlarge screenshot: ${s.t}"><div class="shot">${shot(s.t, s.k)}</div><span class="zoom-hint" aria-hidden="true">${ZOOM}Enlarge</span></button><figcaption>${s.d}</figcaption></figure></div>`; }).join("");
   return `${header([["#features", "Features"], ["#install", "Install"], ["#roadmap", "Roadmap"]])}
 <main id="top">
@@ -536,9 +539,9 @@ function VariantD() {
 const VARIANTS = [["A", "Centred product page", VariantA], ["B", "Split hero + feature tour", VariantB], ["C", "Docs shell (Starlight-like)", VariantC], ["D", "Pick: B hero + zoomable tour, A timeline", VariantD]];
 const qs = new URLSearchParams(location.search);
 let vi = Math.max(0, VARIANTS.findIndex(v => v[0] === (qs.get("variant") || "A").toUpperCase()));
-SIM.rm = qs.get("rm") === "1"; SIM.slow = qs.get("slow") === "1";
+SIM.rm = qs.get("rm") === "1"; SIM.slow = qs.get("slow") === "1"; SIM.save = qs.get("save") === "1";
 function syncUrl() {
-  const p = new URLSearchParams(); p.set("variant", VARIANTS[vi][0]); if (SIM.rm) p.set("rm", "1"); if (SIM.slow) p.set("slow", "1");
+  const p = new URLSearchParams(); p.set("variant", VARIANTS[vi][0]); if (SIM.rm) p.set("rm", "1"); if (SIM.slow) p.set("slow", "1"); if (SIM.save) p.set("save", "1");
   try { history.replaceState(null, "", "?" + p + location.hash); } catch {}
 }
 function renderState() {
@@ -552,6 +555,7 @@ function render() {
   document.documentElement.classList.toggle("sim-rm", SIM.rm);
   document.getElementById("p-rm").setAttribute("aria-pressed", SIM.rm);
   document.getElementById("p-slow").setAttribute("aria-pressed", SIM.slow);
+  document.getElementById("p-save").setAttribute("aria-pressed", SIM.save);
   syncUrl(); initLoops(); renderState();
 }
 function go(d) { vi = (vi + d + VARIANTS.length) % VARIANTS.length; try { history.replaceState(null, "", location.pathname + location.search); } catch {} render(); scrollTo(0, 0); }
@@ -559,6 +563,7 @@ document.getElementById("p-prev").onclick = () => go(-1);
 document.getElementById("p-next").onclick = () => go(1);
 document.getElementById("p-rm").onclick = () => { SIM.rm = !SIM.rm; render(); };
 document.getElementById("p-slow").onclick = () => { SIM.slow = !SIM.slow; render(); };
+document.getElementById("p-save").onclick = () => { SIM.save = !SIM.save; render(); };
 document.getElementById("p-more").onclick = e => { const o = document.getElementById("proto").classList.toggle("open"); e.currentTarget.setAttribute("aria-expanded", o); };
 addEventListener("keydown", e => {
   if (e.target.closest("input,textarea,[contenteditable]") || document.querySelector("dialog[open]")) return;
