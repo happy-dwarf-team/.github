@@ -1,0 +1,500 @@
+<title>Happy Dwarf Home Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!--
+  PROTOTYPE, throw away. happy-dwarf-team/.github#12: "What does the organization home page look like?"
+  Three structurally different variants of happydwarf.dev's home page (plus the 404),
+  switchable from the floating bar at the bottom (← / → keys too). Content from #9, family from #11.
+  The real site is Astro with no client JS; the JS here only swaps variants.
+  Placeholder icons: Plugin template, paradox-workshop-publish, Widescreen loading screens, Proper 2K UI,
+  and the favicon glyph (drawn here for the first time).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout concept: a calm dark-forge hub; the page points outward, the cards carry the only actions. */
+:root {
+  color-scheme: dark;
+  /* Family tokens (#11, from anvil-website/DESIGN.md) */
+  --forge-bg: #16171a;
+  --forge-surface: #1f2024;
+  --forge-surface-raised: #26272c;
+  --forge-border: #34363c;
+  --forge-text: #e8e6e3;
+  --forge-text-muted: #a8a29e;
+  --forge-white: #f7f5f2;
+  /* Organization site accent = family orange */
+  --forge-accent: #f5922a;
+  --forge-accent-strong: #ffad55;
+  --forge-accent-soft: #3d2611;
+  --forge-on-accent: #16171a;
+  /* Etch's accent, used on its icon only on the hub */
+  --etch-accent: #4fc9a8;
+  --forge-radius: 0.75rem;
+  --forge-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --wrap: 72rem;
+  /* Prototype chrome, deliberately off-family */
+  --proto-bg: #f7f5f2;
+  --proto-fg: #111;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--forge-bg);
+  color: var(--forge-text);
+  font: 400 1rem/1.6 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--forge-accent-strong); text-underline-offset: 0.18em; }
+a:hover { color: var(--forge-white); }
+:focus-visible { outline: 2px solid var(--forge-accent); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--font-mono); letter-spacing: -0.02em; text-wrap: balance; color: var(--forge-white); margin: 0; }
+p { margin: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap {
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (min-width: 640px) { .wrap { padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); } }
+
+/* Skip link */
+.skip { position: absolute; left: 1rem; top: -4rem; z-index: 50; padding: 0.6rem 1rem; background: var(--forge-accent); color: var(--forge-on-accent); font-weight: 600; border-radius: 0.5rem; text-decoration: none; }
+.skip:focus { top: calc(0.75rem + env(safe-area-inset-top, 0px)); }
+
+/* Header (shared) */
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--forge-bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--forge-border); }
+.site-header .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1rem; min-height: 3.75rem; }
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 44px; color: var(--forge-white); text-decoration: none; font: 700 0.95rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.brand svg { width: 2rem; height: 2rem; }
+.nav { display: flex; align-items: center; gap: 0.25rem; margin-left: auto; }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 0.7rem; color: var(--forge-text-muted); text-decoration: none; font-size: 0.95rem; border-radius: 0.5rem; transition: color 160ms var(--forge-ease), background-color 160ms var(--forge-ease); }
+.nav a:hover { color: var(--forge-white); background: var(--forge-surface); }
+.nav .gh { width: 44px; justify-content: center; padding: 0; }
+.nav .gh svg { width: 1.25rem; height: 1.25rem; fill: currentColor; }
+@media (max-width: 559px) {
+  /* Phones: brand + GitHub on top, the three anchors in one row below (no hamburger). */
+  .site-header .wrap { padding-block: 0.25rem; }
+  .nav { order: 3; width: 100%; margin-left: -0.7rem; justify-content: flex-start; }
+  .nav .gh { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: 0.35rem; }
+}
+
+/* Shared bits */
+.icon { flex: none; color: var(--forge-accent); }
+.icon.etch { color: var(--etch-accent); }
+.badge { flex: none; display: inline-flex; align-items: center; padding: 0.1rem 0.6rem; border: 1px solid var(--forge-border); border-radius: 999px; color: var(--forge-text-muted); font: 500 0.78rem/1.5 var(--font-body); white-space: nowrap; }
+.badge.version { font-family: var(--font-mono); border-color: var(--forge-accent); color: var(--forge-accent-strong); }
+.links { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 1.25rem; }
+.link { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 44px; font-weight: 500; text-decoration: none; }
+.link:hover { text-decoration: underline; }
+.link.quiet { color: var(--forge-text-muted); font-weight: 400; }
+.link.quiet:hover { color: var(--forge-white); }
+.arrow { transition: transform 180ms var(--forge-ease); }
+.link:hover .arrow { transform: translateX(3px); }
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.6rem 1.15rem; border-radius: 0.6rem; background: var(--forge-accent); color: var(--forge-on-accent); font-weight: 600; text-decoration: none; transition: background-color 180ms var(--forge-ease); }
+.btn:hover { background: var(--forge-accent-strong); color: var(--forge-on-accent); }
+.btn:hover .arrow { transform: translateX(3px); }
+.eyebrow { font: 500 0.78rem/1.4 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--forge-accent); }
+.muted { color: var(--forge-text-muted); }
+code { font-family: var(--font-mono); font-size: 0.88em; background: var(--forge-surface-raised); padding: 0.05em 0.35em; border-radius: 0.3em; color: var(--forge-text); }
+section { scroll-margin-top: 5rem; }
+
+/* Card (A and C) */
+.card { display: flex; flex-direction: column; gap: 0.7rem; min-width: 0; padding: 1.25rem 1.4rem 0.6rem; background: var(--forge-surface); border: 1px solid var(--forge-border); border-radius: var(--forge-radius); transition: border-color 180ms var(--forge-ease), transform 180ms var(--forge-ease); }
+.card:hover, .card:focus-within { border-color: var(--forge-accent); transform: translateY(-2px); }
+.card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+.card h3 { display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; }
+.card h3 a { color: var(--forge-white); text-decoration: none; }
+.card h3 a:hover { text-decoration: underline; }
+.card > p { color: var(--forge-text-muted); }
+.card .links { margin-top: auto; border-top: 1px solid var(--forge-border); padding-top: 0.2rem; }
+.card.archived { background: transparent; border-style: dashed; }
+.card.archived h3 a { color: var(--forge-text); }
+
+/* About + Get involved (shared shape, variants restyle) */
+.principles { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); padding: 0; margin: 0; list-style: none; }
+.principles li { display: flex; flex-direction: column; gap: 0.35rem; }
+.principles strong { font-family: var(--font-mono); font-weight: 700; color: var(--forge-white); font-size: 1rem; }
+.paths { display: grid; gap: 0 2rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); padding: 0; margin: 0; list-style: none; }
+.paths li { display: flex; flex-direction: column; gap: 0.15rem; padding-block: 1rem; border-top: 1px solid var(--forge-border); }
+.paths .q { font-weight: 600; color: var(--forge-white); }
+
+/* Footer (shared) */
+.site-footer { border-top: 1px solid var(--forge-border); margin-top: 5rem; }
+.site-footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 2rem; padding-block: 2rem calc(6rem + env(safe-area-inset-bottom, 0px)); color: var(--forge-text-muted); font-size: 0.875rem; }
+.foot-brand { display: inline-flex; align-items: center; gap: 0.6rem; }
+.foot-brand svg { width: 1.5rem; height: 1.5rem; color: var(--forge-accent); }
+.foot-links { display: flex; flex-wrap: wrap; gap: 0 1.25rem; }
+.foot-links a { color: var(--forge-text-muted); display: inline-flex; align-items: center; min-height: 44px; }
+.foot-links a:hover { color: var(--forge-white); }
+.notice { flex-basis: 100%; order: 3; font-size: 0.82rem; }
+
+/* ---------- Variant A: stacked groups (the #9 outline as written) ---------- */
+.va .hero { text-align: center; padding-block: 4.5rem 3.5rem; display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
+.va .hero .logo { width: 7.5rem; height: 7.5rem; }
+.va .hero .wordmark { font: 700 0.9rem/1 var(--font-mono); letter-spacing: 0.24em; color: var(--forge-text-muted); }
+.va .hero h1 { font-size: clamp(1.75rem, 1.2rem + 2.6vw, 2.9rem); line-height: 1.15; max-width: 22ch; }
+.va .hero .lead { font-size: 1.15rem; color: var(--forge-text-muted); max-width: 36rem; }
+.va .group { display: flex; flex-direction: column; gap: 1.25rem; padding-block: 2.5rem; }
+.va .group-head { display: flex; flex-direction: column; gap: 0.4rem; max-width: 42rem; }
+.va .group-head h2 { font-size: 1.5rem; }
+.va .grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .va .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .va .grid.n3 { grid-template-columns: repeat(3, 1fr); } }
+.va .featured { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 1.25rem 2rem; padding: 1.75rem; background: linear-gradient(135deg, var(--forge-accent-soft), var(--forge-surface) 60%); border-color: color-mix(in srgb, var(--forge-accent) 45%, var(--forge-border)); }
+.va .featured .body { flex: 1 1 22rem; display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
+.va .featured h3 { font-size: 1.6rem; }
+.va .featured h3 .icon { width: 2.5rem; height: 2.5rem; }
+.va .featured .body > p { color: var(--forge-text); font-size: 1.05rem; max-width: 44rem; }
+.va .featured .links { border: 0; padding: 0; margin: 0; }
+.va .block { padding-block: 3.5rem; border-top: 1px solid var(--forge-border); display: flex; flex-direction: column; gap: 1.5rem; }
+.va .block h2 { font-size: 1.5rem; }
+.va .block .intro { max-width: 42rem; color: var(--forge-text-muted); }
+.va .principles li { padding: 1.1rem 1.25rem; border: 1px solid var(--forge-border); border-radius: var(--forge-radius); }
+
+/* ---------- Variant B: ledger (group rail + project rows) ---------- */
+.vb .hero { display: grid; gap: 2rem; align-items: center; padding-block: 3.5rem 3rem; grid-template-columns: 1fr; }
+@media (min-width: 900px) { .vb .hero { grid-template-columns: 1fr auto; padding-block: 5rem 4rem; } }
+.vb .hero .text { display: flex; flex-direction: column; gap: 1.1rem; min-width: 0; }
+.vb .hero h1 { font-size: clamp(2rem, 1.3rem + 3.4vw, 3.6rem); line-height: 1.08; max-width: 18ch; }
+.vb .hero .lead { font-size: 1.2rem; color: var(--forge-text-muted); max-width: 34rem; }
+.vb .hero .logo { width: clamp(6rem, 18vw, 13rem); height: auto; aspect-ratio: 1; max-width: 100%; order: -1; }
+@media (min-width: 900px) { .vb .hero .logo { order: 0; } }
+.vb .audience { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 0; list-style: none; }
+.vb .audience li { padding: 0.25rem 0.75rem; border: 1px solid var(--forge-border); border-radius: 999px; font-size: 0.875rem; color: var(--forge-text); }
+.vb .group { display: grid; gap: 1rem 3rem; padding-block: 2.5rem; border-top: 1px solid var(--forge-border); grid-template-columns: 1fr; }
+@media (min-width: 900px) { .vb .group { grid-template-columns: 17rem 1fr; } .vb .rail { position: sticky; top: 5.5rem; align-self: start; } }
+.vb .rail { display: flex; flex-direction: column; gap: 0.5rem; }
+.vb .rail h2 { font-size: 1.3rem; }
+.vb .rail .count { font: 500 0.8rem/1 var(--font-mono); color: var(--forge-text-muted); }
+.vb .rows { display: flex; flex-direction: column; min-width: 0; }
+.vb .row { display: grid; gap: 0.25rem 1rem; padding-block: 1.1rem; border-bottom: 1px solid var(--forge-border); grid-template-columns: auto 1fr auto; grid-template-areas: "icon name badge" "icon sum sum" "icon links links"; transition: background-color 180ms var(--forge-ease); }
+.vb .row:last-child { border-bottom: 0; }
+.vb .row:hover, .vb .row:focus-within { background: linear-gradient(90deg, var(--forge-surface), transparent); }
+.vb .row .icon { grid-area: icon; width: 2rem; height: 2rem; margin-top: 0.1rem; }
+.vb .row h3 { grid-area: name; font-size: 1.1rem; align-self: center; }
+.vb .row h3 a { color: var(--forge-white); text-decoration: none; }
+.vb .row h3 a:hover { text-decoration: underline; }
+.vb .row .badge { grid-area: badge; align-self: center; }
+.vb .row > p { grid-area: sum; color: var(--forge-text-muted); max-width: 44rem; }
+.vb .row .links { grid-area: links; }
+@media (min-width: 900px) { .vb .row { grid-template-columns: auto 1fr auto; } }
+.vb .row.featured { padding: 1.5rem; margin-bottom: 0.5rem; border: 1px solid color-mix(in srgb, var(--forge-accent) 45%, var(--forge-border)); border-radius: var(--forge-radius); background: var(--forge-surface); }
+.vb .row.featured .icon { width: 2.75rem; height: 2.75rem; }
+.vb .row.featured h3 { font-size: 1.5rem; }
+.vb .row.featured > p { color: var(--forge-text); font-size: 1.05rem; }
+.vb .row.featured .links { margin-top: 0.5rem; }
+.vb .row.archived h3 a, .vb .row.archived > p { color: var(--forge-text-muted); }
+.vb .block { display: grid; gap: 1.25rem 3rem; padding-block: 3rem; border-top: 1px solid var(--forge-border); grid-template-columns: 1fr; }
+@media (min-width: 900px) { .vb .block { grid-template-columns: 17rem 1fr; } }
+.vb .block h2 { font-size: 1.3rem; }
+.vb .block .content { display: flex; flex-direction: column; gap: 1.5rem; min-width: 0; }
+.vb .block .intro { max-width: 44rem; }
+.vb .principles { grid-template-columns: 1fr; gap: 0; }
+.vb .principles li { flex-direction: row; flex-wrap: wrap; gap: 0.25rem 1rem; padding-block: 0.9rem; border-top: 1px solid var(--forge-border); }
+.vb .principles strong { flex: 0 0 16rem; }
+.vb .principles span { flex: 1 1 18rem; color: var(--forge-text-muted); }
+
+/* ---------- Variant C: ecosystem map ---------- */
+.vc .hero { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; padding-block: 2.5rem 2rem; }
+.vc .hero .logo { width: 4.5rem; height: 4.5rem; flex: none; }
+.vc .hero .text { flex: 1 1 20rem; display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+.vc .hero h1 { font-size: clamp(1.4rem, 1.1rem + 1.4vw, 2rem); line-height: 1.2; }
+.vc .hero .lead { color: var(--forge-text-muted); }
+.vc .hero .jump { flex: none; }
+.vc .map { display: flex; flex-direction: column; gap: 1.5rem; padding-block: 1rem 2rem; }
+.vc .zone { display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem; border: 1px solid var(--forge-border); border-radius: calc(var(--forge-radius) + 0.25rem); min-width: 0; }
+@media (max-width: 639px) { .vc .zone { padding: 1rem; border-radius: var(--forge-radius); } .vc .branches { padding-left: 1.1rem; } .vc .branches::before { left: 0.2rem; } .vc .branches .card::before { left: -0.9rem; width: 0.85rem; } }
+.vc .zone-head { display: flex; flex-direction: column; gap: 0.35rem; max-width: 44rem; }
+.vc .zone-head h2 { font-size: 1.2rem; }
+.vc .zone-head p { color: var(--forge-text-muted); }
+.vc .tree { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 900px) { .vc .tree { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: stretch; } }
+.vc .featured { justify-content: flex-start; background: linear-gradient(160deg, var(--forge-accent-soft), var(--forge-surface) 55%); border-color: color-mix(in srgb, var(--forge-accent) 45%, var(--forge-border)); padding: 1.6rem 1.6rem 1rem; }
+.vc .featured h3 { font-size: 1.6rem; }
+.vc .featured h3 .icon { width: 2.75rem; height: 2.75rem; }
+.vc .featured > p { color: var(--forge-text); font-size: 1.05rem; }
+.vc .featured .links { border: 0; }
+.vc .branches { position: relative; display: flex; flex-direction: column; gap: 0.75rem; padding-left: 1.75rem; min-width: 0; }
+.vc .branches::before { content: ''; position: absolute; left: 0.5rem; top: 1.5rem; bottom: 1.5rem; width: 2px; background: var(--forge-border); }
+.vc .branches .card { position: relative; }
+.vc .branches .card::before { content: ''; position: absolute; left: -1.3rem; top: 1.9rem; width: 1.25rem; height: 2px; background: var(--forge-border); transition: background-color 180ms var(--forge-ease); }
+.vc .branches .card:hover::before, .vc .branches .card:focus-within::before { background: var(--forge-accent); }
+.vc .branch-label { font: 500 0.75rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--forge-text-muted); }
+.vc .branches .card { padding-block: 1rem 0.4rem; }
+.vc .pair { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+@media (min-width: 900px) { .vc .pair { grid-template-columns: 1fr 1fr; } }
+.vc .stack { display: flex; flex-direction: column; gap: 0.75rem; }
+.vc .lower { display: grid; gap: 1.5rem; grid-template-columns: 1fr; padding-block: 2rem; }
+@media (min-width: 900px) { .vc .lower { grid-template-columns: 1fr 1fr; } }
+.vc .lower section { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.vc .lower h2 { font-size: 1.2rem; }
+.vc .principles { grid-template-columns: 1fr; gap: 0.75rem; }
+.vc .principles li { padding-left: 1rem; border-left: 2px solid var(--forge-accent); }
+.vc .paths { grid-template-columns: 1fr; }
+
+/* ---------- 404 ---------- */
+.v404 { display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; padding-block: 6rem 3rem; max-width: 40rem; }
+.v404 .code { font: 700 clamp(3.5rem, 2rem + 8vw, 6.5rem)/1 var(--font-mono); color: var(--forge-accent); letter-spacing: -0.04em; }
+.v404 h1 { font-size: 1.6rem; }
+.v404 ul { display: flex; flex-wrap: wrap; gap: 0 1.5rem; padding: 0; margin: 0; list-style: none; }
+
+/* ---------- Motion off: real preference or the prototype toggle ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .card:hover, .card:focus-within { transform: none; }
+  .link:hover .arrow, .btn:hover .arrow { transform: none; }
+}
+html.sim-rm { scroll-behavior: auto; }
+html.sim-rm *, html.sim-rm *::before, html.sim-rm *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+html.sim-rm .card:hover, html.sim-rm .card:focus-within { transform: none; }
+html.sim-rm .link:hover .arrow, html.sim-rm .btn:hover .arrow { transform: none; }
+
+/* ---------- Prototype switcher (not part of the design) ---------- */
+.proto-bar { position: fixed; z-index: 100; left: 50%; transform: translateX(-50%); bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 0.25rem; max-width: calc(100vw - 2rem); padding: 0.3rem; background: var(--proto-bg); color: var(--proto-fg); border-radius: 999px; box-shadow: 0 6px 24px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(0 0 0 / 0.2); font: 600 0.8rem/1 system-ui, sans-serif; }
+.proto-bar button { min-width: 2.5rem; min-height: 2.5rem; border: 0; border-radius: 999px; background: transparent; color: inherit; font: inherit; cursor: pointer; padding-inline: 0.75rem; }
+.proto-bar button:hover { background: rgb(0 0 0 / 0.08); }
+.proto-bar button:focus-visible { outline: 2px solid #111; outline-offset: 1px; }
+.proto-bar .label { padding-inline: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.proto-bar .sep { width: 1px; align-self: stretch; margin-block: 0.4rem; background: rgb(0 0 0 / 0.2); }
+.proto-bar [aria-pressed="true"] { background: #111; color: var(--proto-bg); }
+@media (max-width: 480px) { .proto-bar .label .name { display: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="hd-logo" viewBox="0 0 256 256"><defs><linearGradient id="sheen1" gradientUnits="userSpaceOnUse" x1="126.91" y1="38.09" x2="127.91" y2="38.09"><stop offset="0" stop-color="#bdbebe"/><stop offset="1" stop-color="#fff"/></linearGradient><linearGradient id="sheen2" gradientUnits="userSpaceOnUse" x1="169.78" y1="48.88" x2="170.56" y2="48.27"><stop offset="0" stop-color="#bdbebe"/><stop offset="1" stop-color="#fff"/></linearGradient><linearGradient id="sheen3" gradientUnits="userSpaceOnUse" x1="153.38" y1="53.18" x2="154.05" y2="52.43"><stop offset="0" stop-color="#bdbebe"/><stop offset="1" stop-color="#fff"/></linearGradient></defs>
+<path fill="#2a2e30" d="M128.05 -0.57C133.51 4.55 138.26 10.2 143.2 15.83C168.37 20.03 189.25 31.51 206.68 50.04C230.69 42.63 236.16 29.32 240.72 6.36C264.18 35.71 262.26 74.81 228.73 95.27C229.59 101.53 230.46 107.8 231.32 114.06C229.88 114.08 228.43 114.1 226.99 114.12C240.14 129.5 244.33 142.9 249.83 161.79C246.37 160.76 242.91 159.73 239.45 158.71C244.18 178.66 235.37 197.31 220.46 210.38C219.69 207.84 218.93 205.3 218.16 202.76C207.35 220.98 194.79 229.91 176.03 239.06C175.45 237.34 174.88 235.62 174.31 233.9C165.36 240.59 138.64 255.55 127.77 255.4C115.66 255.22 90.67 240.71 80.6 233.73C80.25 235.46 79.9 237.19 79.54 238.92C61.71 230.93 47.43 219.61 37.76 202.47C37.01 204.96 36.26 207.45 35.5 209.94C20.52 197.76 11.72 177.79 16.56 158.58C13.56 159.63 10.56 160.67 7.56 161.72C9.36 143.69 17.63 127.95 29 114.04C27.53 114.09 26.07 114.14 24.6 114.19C25.61 107.5 26.74 100.95 28.39 94.42C-6.54 73.25 -6.83 36.46 15.2 5.39C18.65 29.28 25.13 41.36 48.74 49.86C66.24 31.64 87.72 19.71 112.82 15.83C117.7 10.13 122.57 4.55 128.05 -0.57Z"/>
+<path fill="url(#sheen1)" d="M128.07 13.42C132.67 18.72 137.27 24.03 141.87 29.33C141.92 36.13 141.96 42.93 142 49.72C137.23 53.78 132.46 57.83 127.69 61.88C122.81 57.75 117.92 53.62 113.03 49.49C113.05 42.82 113.06 36.16 113.08 29.5C118.08 24.14 123.07 18.78 128.07 13.42Z"/>
+<path fill="#bdbebe" d="M104.49 27.72C102.74 35.9 100.99 44.07 99.23 52.24C85.13 56.06 71.03 59.87 56.92 63.68C65.64 44.99 84.22 31.12 104.49 27.72Z"/>
+<path fill="url(#sheen2)" d="M151.36 25.99C172.44 34.34 188.17 44.43 200.07 64.22C185.05 60 170.03 55.79 155.02 51.58C153.8 43.05 152.58 34.52 151.36 25.99Z"/>
+<path fill="#bdbebe" d="M14.52 35.13C21.33 46.97 29.8 51.62 41.78 57.19C39.34 63.16 36.91 69.14 34.47 75.11C19.36 67.64 9.03 52.15 14.52 35.13Z"/>
+<path fill="#ffffff" d="M242.63 33.44C246.17 53.66 241.06 65.02 222.8 74.7C220.52 69.02 218.24 63.34 215.95 57.66C228.14 52.04 236.27 45.36 242.63 33.44Z"/>
+<path fill="url(#sheen3)" d="M110.75 58.5C116.31 63.68 121.88 68.85 127.44 74.03C133.76 68.51 140.07 63 146.39 57.48C152.15 59.3 158.11 59.74 163.96 61.34C181.53 66.15 198.57 72.15 214.84 80.39C215.53 86.08 216.23 91.77 216.92 97.47C201.95 91.04 187.06 86 170.99 83.18C163.57 81.88 155.82 81.66 148.61 79.7C141.52 85 134.43 90.3 127.34 95.6C120.31 90.32 113.28 85.04 106.26 79.76C101.18 81.18 95.93 81.29 90.69 82.2C73.12 85.26 55.93 89.88 40 98.05C40.42 92.06 40.84 86.07 41.26 80.07C62.56 68.61 86.7 60.92 110.75 58.5Z"/>
+<path fill="#bdbebe" d="M125.1 134.5C127.7 134.5 130.29 134.5 132.89 134.5C130.29 134.5 127.7 134.5 125.1 134.5Z"/>
+<path fill="#ffffff" d="M99.59 159.29C118.77 159.28 137.95 159.27 157.14 159.26C139.52 174.83 117.04 175.82 99.59 159.29Z"/>
+<path fill="#fedaa8" fill-rule="evenodd" d="M105.42 89.36C112.4 95.17 120.27 100.84 127.91 105.73C135.91 100.58 143 94.13 151.11 89.02C159.6 90.77 168.24 91.38 176.68 93.14C183.15 94.5 189.33 96.87 195.62 98.86C194.92 113.53 197.62 116.08 191.18 130.83C177.8 124.44 164.06 123.47 151.66 117.12C152.1 118.95 152.54 120.78 152.98 122.61C145.71 139.26 106.88 136.93 103.52 123.27C102.99 121.11 104.11 119.09 104.57 117.03C101.65 118.16 98.51 120.04 95.51 120.87C91.47 121.98 87.21 122.41 83.17 123.68C76.86 125.68 70.82 128.31 64.66 130.56C58.92 116.93 60.55 113.95 61.04 99.98C74.64 92.42 90.36 91.88 105.42 89.36ZM70.84 113.48C72.23 113.1 73.7 113.24 75.06 112.69C78.9 111.15 81.52 108.04 85.76 107.17C95.22 105.21 103.72 109.31 112.46 112.08C111.54 110.26 111.22 108.18 109.93 106.53C101.08 95.19 81.99 93.6 73.45 106.45C72.12 108.45 71.62 111.26 70.84 113.48ZM144.45 110.8C150.16 110.24 152.92 108.6 158.2 107.23C168.56 104.55 176.95 110.09 185.75 114.41C185.12 111.86 184.99 109.31 183.68 106.98C177.21 95.45 160.11 94.62 150.57 102.33C147.72 104.63 146.28 107.7 144.45 110.8Z"/>
+<path fill="#f78d1c" fill-rule="evenodd" d="M52.06 102.5C51.85 113.75 51.9 123.98 54.62 134.93C49.35 134.9 45.72 134.3 40.65 132.76C50.09 156.11 61.78 163.09 86.63 163.05C108.69 185.47 146.84 185.48 168.74 163.04C193.01 163.11 206.5 156.66 215.24 133.07C210.38 134.5 206.64 134.93 201.58 134.9C203.88 123.1 204.22 114.24 203.74 102.22C206.98 103.94 211.21 105.57 213.71 108.37C219.93 115.35 225.16 136.72 226.1 145.91C223.83 143.17 221.57 140.43 219.3 137.7C225.88 156.68 228.74 170.01 221.85 189.43C219.32 183.44 216.67 179.08 212.59 174.06C206.3 194.63 205.67 204.32 186.96 218.15C186.83 211.1 185.38 205.86 182.21 199.58C171.3 223.85 153.36 235.25 128.37 242.62C102.21 233.89 86.45 224.93 73.85 199.53C70.68 206.41 69.94 211.51 69.83 219.07C49.57 201.65 51.06 198.13 43.35 174.14C39.54 178.71 36.61 183.23 33.79 188.48C27.24 169.92 31.44 158.41 35 140.06C33.22 142.04 31.44 144.03 29.65 146.01C31.09 137.06 36.3 114.14 42.73 107.75C45.25 105.25 48.92 103.98 52.06 102.5ZM92.54 127.55C100.44 137.76 109.64 141.03 122.06 143.14C102.59 155.74 72.46 159.86 54.29 143.14C68.92 139.63 78.68 132.33 92.54 127.55ZM162.94 128.33C178.26 131.75 186.12 139.92 202.64 142.93C182.8 159.81 154.48 155.68 133.3 143.19C145.19 141.29 155.47 138.31 162.94 128.33Z"/></symbol>
+  <!-- Favicon glyph, family icon grammar: helmet (dark .35 over orange) and beard. First draft. -->
+  <symbol id="hd-glyph" viewBox="0 0 32 32">
+    <path fill="currentColor" d="M16 2.5 18 5c4.6.8 7.6 3.7 8.7 7.8l3-2.6c.6 3.2-.6 5.6-3 6.6H5.3c-2.4-1-3.6-3.4-3-6.6l3 2.6C6.4 8.7 9.4 5.8 14 5z"/>
+    <path fill="#16171a" opacity=".35" d="M16 2.5 18 5c4.6.8 7.6 3.7 8.7 7.8l3-2.6c.6 3.2-.6 5.6-3 6.6H5.3c-2.4-1-3.6-3.4-3-6.6l3 2.6C6.4 8.7 9.4 5.8 14 5z"/>
+    <path fill="currentColor" d="M5.5 19.5h3.2c1.4 1.6 4.1 2.5 7.3 2.5s5.9-.9 7.3-2.5h3.2c-.2 5.6-4.6 9.4-10.5 10.5C10.1 28.9 5.7 25.1 5.5 19.5z"/>
+  </symbol>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+<div id="app"></div>
+
+<div class="proto-bar" role="toolbar" aria-label="Prototype controls">
+  <button type="button" id="proto-prev" aria-label="Previous variant">←</button>
+  <span class="label" id="proto-label" aria-live="polite"></span>
+  <button type="button" id="proto-next" aria-label="Next variant">→</button>
+  <span class="sep"></span>
+  <button type="button" id="proto-404" aria-pressed="false">404</button>
+  <button type="button" id="proto-rm" aria-pressed="false" title="Simulate prefers-reduced-motion">No motion</button>
+</div>
+
+<script>
+const GH = 'https://github.com/happy-dwarf-team';
+const ICONS = {
+  anvil: '<path fill="currentColor" d="M2 10.5 9 8h19v5l-6 2v4l3.5 4v3h-17v-3l3.5-4v-4C7 14.5 4 13.2 2 10.5Z"/><path fill="#16171a" opacity=".35" d="M9 8h19v1.6H9z"/>',
+  bellows: '<path fill="currentColor" d="M2 15l8-1.8v5.6L2 17z"/><path fill="currentColor" d="M9 12 26 3.5l1.6 3.2L10.6 15.1z"/><path fill="currentColor" d="M9 20 26 28.5l1.6-3.2-17-8.4z"/><path fill="currentColor" d="M12.5 16 24 10l-3.5 3 3.5 3-3.5 3 3.5 3z"/><path fill="#16171a" opacity=".35" d="M12.5 16 24 10l-3.5 3 3.5 3-3.5 3 3.5 3z"/>',
+  tongs: '<g fill="none" stroke="currentColor" stroke-width="3.5"><path d="M12 16 30 7M12 16l18 9"/><path d="M12 16C9 10.5 4 10.5 3 14.5M12 16c-3 5.5-8 5.5-9 1.5"/></g><circle cx="12" cy="16" r="3.4" fill="currentColor"/><circle cx="12" cy="16" r="1.3" fill="#16171a" opacity=".35"/>',
+  template: '<path fill="currentColor" fill-rule="evenodd" d="M6 3h14l6 6v20H6zM14.5 13h3v4h4v3h-4v4h-3v-4h-4v-3h4z"/><path fill="#16171a" opacity=".35" d="M20 3v6h6z"/>',
+  etch: '<g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4.5" y="7" width="17" height="15" rx="1.5"/><path d="M4.5 11.5h17"/></g><path fill="currentColor" opacity=".55" d="M7.5 15h7v1.6h-7zM7.5 18h4.5v1.6h-4.5z"/><path fill="currentColor" d="M15.2 24.8 17 20.2 25.4 11.8 28.2 14.6 19.8 23z"/><path fill="currentColor" d="M26.3 10.9 28.1 9.1a1.4 1.4 0 0 1 2 0l.8.8a1.4 1.4 0 0 1 0 2l-1.8 1.8z"/><path fill="#16171a" opacity=".35" d="M17 20.2 25.4 11.8 26.5 12.9 18.1 21.3z"/>',
+  publish: '<path fill="currentColor" d="M3.5 15h25v13h-25z"/><path fill="#16171a" opacity=".35" d="M3.5 15h25v3h-25z"/><path fill="currentColor" d="M16 2l7.5 7.5h-5V14h-5V9.5h-5z"/>',
+  widescreen: '<path fill="currentColor" fill-rule="evenodd" d="M2 8h28v16H2zM4.5 10.5v11h23v-11z"/><path fill="currentColor" d="M7 16l4.5-3.8v7.6zM25 16l-4.5-3.8v7.6z"/><path fill="#16171a" opacity=".35" d="M11.5 14.5h9v3h-9z"/>',
+  proper2k: '<path fill="currentColor" fill-rule="evenodd" d="M3 4.5h26v19H3zM5.5 10v11h21V10z"/><path fill="#16171a" opacity=".35" d="M3 4.5h26v5.5H3z"/><path fill="currentColor" d="M12 26h8v2.5h-8z"/><path fill="currentColor" opacity=".55" d="M8 13h7v2H8zM8 17h11v2H8z"/>',
+};
+const GROUPS = [
+  { id: 'anvil-ecosystem', title: 'Anvil ecosystem', intro: 'Anvil loads native plugins into the game; the plugins do what mods can’t.' },
+  { id: 'mod-tools', title: 'Tools for mod authors', intro: 'For people who make mods: see your interface as you write it, publish with one command.' },
+  { id: 'anbennar', title: 'Anbennar mods', intro: 'Interface mods for Anbennar, the fantasy total conversion of EU4. Anbennar is made by its own team; these mods need it installed.' },
+];
+const P = [
+  { id: 'anvil', group: 'anvil-ecosystem', order: 0, featured: true, name: 'Anvil', icon: 'anvil', version: '1.3.0',
+    summary: 'Loads native plugins into Europa Universalis IV without changing <code>eu4.exe</code>, so Steam updates and file checks keep working.',
+    primary: { href: 'https://anvil.happydwarf.dev', label: 'Go to anvil.happydwarf.dev' }, repo: GH + '/anvil' },
+  { id: 'bellows', group: 'anvil-ecosystem', order: 1, name: 'Bellows', icon: 'bellows', version: '0.9.0',
+    summary: 'Makes the game start faster, without changing game files or how it plays.',
+    primary: { href: 'https://anvil.happydwarf.dev/plugins/bellows/', label: 'Plugin page' }, repo: GH + '/bellows' },
+  { id: 'tongs', group: 'anvil-ecosystem', order: 2, name: 'Tongs', icon: 'tongs', version: '0.14.0',
+    summary: 'Lets scripts and agents control a running game: read its state, take screenshots, use keyboard and mouse.',
+    primary: { href: 'https://anvil.happydwarf.dev/plugins/tongs/', label: 'Plugin page' }, repo: GH + '/tongs' },
+  { id: 'template', group: 'anvil-ecosystem', order: 3, name: 'Plugin template', icon: 'template', status: 'Template',
+    summary: 'Start your own Anvil plugin with build, CI checks and releases ready to go.',
+    primary: { href: GH + '/anvil-plugin-template', label: 'Use this template' } },
+  { id: 'etch', group: 'mod-tools', order: 0, name: 'Etch', icon: 'etch', version: '0.1.0',
+    summary: 'A VS Code extension that previews EU4 interface mods: edit a <code>.gui</code> or <code>.gfx</code> file and see the window as the game draws it.',
+    primary: { href: 'https://marketplace.visualstudio.com/items?itemName=happy-dwarf-team.etch', label: 'VS Code Marketplace' }, repo: GH + '/etch' },
+  { id: 'pwp', group: 'mod-tools', order: 1, name: 'paradox-workshop-publish', icon: 'publish', version: '0.2.0',
+    summary: 'Publish Paradox game mods to the Steam Workshop from GitHub Actions or your own PC, driven by the mod descriptor.',
+    primary: { href: GH + '/paradox-workshop-publish', label: 'Read the README' } },
+  { id: 'widescreen', group: 'anbennar', order: 0, name: 'Widescreen loading screens', icon: 'widescreen', version: '1.0.0',
+    summary: 'Anbennar loading screens that fit widescreen monitors.',
+    primary: { href: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3686212690', label: 'Steam Workshop' }, repo: GH + '/eu4-anbennar-widescreen-loading-screens' },
+  { id: 'proper2k', group: 'anbennar', order: 1, name: 'Proper 2K UI', icon: 'proper2k', status: 'Archived', archived: true,
+    summary: 'A proper 2K interface for Anbennar. No longer maintained.',
+    primary: { href: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3681465653', label: 'Steam Workshop' }, repo: GH + '/eu4-anbennar-proper-2k-ui' },
+];
+const inGroup = (g) => P.filter((p) => p.group === g).sort((a, b) => a.order - b.order);
+const icon = (p, size = 28) => `<svg class="icon${p.icon === 'etch' ? ' etch' : ''}" width="${size}" height="${size}" viewBox="0 0 32 32" aria-hidden="true" focusable="false">${ICONS[p.icon]}</svg>`;
+const badge = (p) => p.version
+  ? `<span class="badge version"><span class="sr-only">Latest version </span>v${p.version}</span>`
+  : `<span class="badge">${p.status}</span>`;
+const ext = (href) => href.startsWith('http') ? ' rel="noopener"' : '';
+const arrow = '<span class="arrow" aria-hidden="true">→</span>';
+const links = (p, filled = false) => `<div class="links">
+  ${filled ? `<a class="btn" href="${p.primary.href}"${ext(p.primary.href)}>${p.primary.label} ${arrow}</a>`
+           : `<a class="link" href="${p.primary.href}"${ext(p.primary.href)}>${p.primary.label} ${arrow}</a>`}
+  ${p.repo ? `<a class="link quiet" href="${p.repo}" rel="noopener">Source on GitHub</a>` : ''}
+</div>`;
+const card = (p) => p.featured
+  ? `<article class="card featured"><div class="body"><div class="card-head"><h3>${icon(p, 40)}<a href="${p.primary.href}">${p.name}</a></h3>${badge(p)}</div><p>${p.summary}</p></div>${links(p, true)}</article>`
+  : `<article class="card${p.archived ? ' archived' : ''}"><div class="card-head"><h3>${icon(p)}<a href="${p.primary.href}">${p.name}</a></h3>${badge(p)}</div><p>${p.summary}</p>${links(p)}</article>`;
+
+const H1 = 'Open-source tools and mods for Europa Universalis IV.';
+const LEAD = 'They work beside the game, not inside its files.';
+const AUD = 'For players, mod authors and plugin authors.';
+const ABOUT = 'Happy Dwarf is a small volunteer team. We name our tools after the forge because we like work that is made slowly and meant to last, and because a dwarf without a hammer is just a short man with a beard.';
+const PRINCIPLES = [
+  ['Never touch the game’s files', 'No changes to <code>eu4.exe</code>, and Steam file checks keep working.'],
+  ['Open source, MIT, free', 'No payments and no data collection.'],
+  ['Claims we can back up', 'Measurements are labelled with their source; unverified things are marked as unverified.'],
+];
+const PATHS = [
+  ['Need help installing?', `Start with the <a href="https://anvil.happydwarf.dev" rel="noopener">install guide</a>, then <a href="${GH}/.github/blob/main/SUPPORT.md" rel="noopener">SUPPORT.md</a>.`],
+  ['Found a bug or have an idea?', `Open an issue on the <a href="${GH}" rel="noopener">project it concerns</a>.`],
+  ['Want to contribute?', `Read <a href="${GH}/.github/blob/main/CONTRIBUTING.md" rel="noopener">CONTRIBUTING.md</a>. Plugin authors start from the <a href="${GH}/anvil-plugin-template" rel="noopener">Plugin template</a>.`],
+  ['Security problem?', `Report it privately, as <a href="${GH}/.github/blob/main/SECURITY.md" rel="noopener">SECURITY.md</a> explains.`],
+];
+const SLOW = 'Volunteer projects, answers can take a few days.';
+const principles = () => `<ul class="principles">${PRINCIPLES.map(([t, d]) => `<li><strong>${t}</strong><span class="muted">${d}</span></li>`).join('')}</ul>`;
+const paths = () => `<ul class="paths">${PATHS.map(([q, a]) => `<li><span class="q">${q}</span><span class="muted">${a}</span></li>`).join('')}</ul>`;
+const logo = (cls = 'logo') => `<svg class="${cls}" viewBox="0 0 256 256" role="img" aria-label="Happy Dwarf Team logo"><use href="#hd-logo"/></svg>`;
+
+const header = () => `<header class="site-header"><div class="wrap">
+  <a class="brand" href="#top"><svg viewBox="0 0 256 256" aria-hidden="true"><use href="#hd-logo"/></svg>Happy Dwarf</a>
+  <nav class="nav" aria-label="Main">
+    <a href="#projects">Projects</a><a href="#about">About</a><a href="#get-involved">Get involved</a>
+    <a class="gh" href="${GH}" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg><span class="sr-only">Happy Dwarf Team on GitHub</span></a>
+  </nav>
+</div></header>`;
+const footer = () => `<footer class="site-footer"><div class="wrap">
+  <span class="foot-brand"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#hd-glyph"/></svg>Happy Dwarf Team · MIT licensed</span>
+  <span class="foot-links"><a href="${GH}/happydwarf.dev" rel="noopener">Source of this site</a><a href="${GH}" rel="noopener">GitHub organization</a></span>
+  <p class="notice">Unofficial community projects. Not affiliated with or endorsed by Paradox Interactive. Europa Universalis IV is a trademark of Paradox Interactive AB. <span class="muted">(Draft wording, #14 decides.)</span></p>
+</div></footer>`;
+
+/* A: stacked groups — centred hero, each group a heading + card grid, Anvil full width on top. */
+function VariantA() {
+  const groups = GROUPS.map((g) => {
+    const items = inGroup(g.id);
+    const feat = items.filter((p) => p.featured), rest = items.filter((p) => !p.featured);
+    return `<section class="group" id="${g.id}" aria-labelledby="${g.id}-h">
+      <div class="group-head"><h2 id="${g.id}-h">${g.title}</h2><p class="muted">${g.intro}</p></div>
+      ${feat.map(card).join('')}
+      <div class="grid${rest.length >= 3 ? ' n3' : ''}">${rest.map(card).join('')}</div>
+    </section>`;
+  }).join('');
+  return `<div class="va">${header()}<main id="main" tabindex="-1">
+    <div class="wrap">
+      <section class="hero" id="top">${logo()}<span class="wordmark">HAPPY DWARF</span><h1>${H1}</h1><p class="lead">${LEAD} ${AUD}</p><a class="link" href="#projects">See the projects <span aria-hidden="true">↓</span></a></section>
+      <div id="projects">${groups}</div>
+      <section class="block" id="about" aria-labelledby="about-h"><h2 id="about-h">About</h2><p class="intro">${ABOUT}</p>${principles()}</section>
+      <section class="block" id="get-involved" aria-labelledby="gi-h"><h2 id="gi-h">Get involved</h2>${paths()}<p class="muted">${SLOW}</p></section>
+    </div></main>${footer()}</div>`;
+}
+
+/* B: ledger — left-aligned hero with big logo, each group a sticky rail + dense project rows. */
+function VariantB() {
+  const groups = GROUPS.map((g) => {
+    const items = inGroup(g.id);
+    return `<section class="group" id="${g.id}" aria-labelledby="${g.id}-h">
+      <div class="rail"><h2 id="${g.id}-h">${g.title}</h2><p class="muted">${g.intro}</p><span class="count">${items.length} projects</span></div>
+      <div class="rows">${items.map((p) => `<article class="row${p.featured ? ' featured' : ''}${p.archived ? ' archived' : ''}">${icon(p, p.featured ? 44 : 32)}<h3><a href="${p.primary.href}">${p.name}</a></h3>${badge(p)}<p>${p.summary}</p>${links(p, p.featured)}</article>`).join('')}</div>
+    </section>`;
+  }).join('');
+  return `<div class="vb">${header()}<main id="main" tabindex="-1"><div class="wrap">
+    <section class="hero" id="top"><div class="text"><span class="eyebrow">Happy Dwarf Team</span><h1>${H1}</h1><p class="lead">${LEAD}</p>
+      <ul class="audience" aria-label="Made for"><li>Players</li><li>Mod authors</li><li>Plugin authors</li></ul>
+      <a class="link" href="#projects">See the projects <span aria-hidden="true">↓</span></a></div>${logo()}</section>
+    <div id="projects">${groups}</div>
+    <section class="block" id="about" aria-labelledby="about-h"><h2 id="about-h">About</h2><div class="content"><p class="intro">${ABOUT}</p>${principles()}</div></section>
+    <section class="block" id="get-involved" aria-labelledby="gi-h"><h2 id="gi-h">Get involved</h2><div class="content">${paths()}<p class="muted">${SLOW}</p></div></section>
+  </div></main>${footer()}</div>`;
+}
+
+/* C: ecosystem map — compact hero, Anvil as the trunk with its plugins branching off, the other two groups side by side. */
+function VariantC() {
+  const [anvil, ...plugins] = inGroup('anvil-ecosystem');
+  const g = (id) => GROUPS.find((x) => x.id === id);
+  const zoneHead = (x) => `<div class="zone-head"><h2 id="${x.id}-h">${x.title}</h2><p>${x.intro}</p></div>`;
+  return `<div class="vc">${header()}<main id="main" tabindex="-1"><div class="wrap">
+    <section class="hero" id="top">${logo()}<div class="text"><h1>${H1}</h1><p class="lead">${LEAD} ${AUD}</p></div><a class="link jump" href="#projects">See the projects <span aria-hidden="true">↓</span></a></section>
+    <div class="map" id="projects">
+      <section class="zone" id="anvil-ecosystem" aria-labelledby="anvil-ecosystem-h">${zoneHead(g('anvil-ecosystem'))}
+        <div class="tree">${card(anvil).replace('<div class="body">', '').replace('</p></div>', '</p>')}
+          <div class="branches"><span class="branch-label">Plugins and starters</span>${plugins.map(card).join('')}</div></div>
+      </section>
+      <div class="pair">
+        <section class="zone" id="mod-tools" aria-labelledby="mod-tools-h">${zoneHead(g('mod-tools'))}<div class="stack">${inGroup('mod-tools').map(card).join('')}</div></section>
+        <section class="zone" id="anbennar" aria-labelledby="anbennar-h">${zoneHead(g('anbennar'))}<div class="stack">${inGroup('anbennar').map(card).join('')}</div></section>
+      </div>
+    </div>
+    <div class="lower">
+      <section id="about" aria-labelledby="about-h"><h2 id="about-h">About</h2><p class="muted">${ABOUT}</p>${principles()}</section>
+      <section id="get-involved" aria-labelledby="gi-h"><h2 id="gi-h">Get involved</h2>${paths()}<p class="muted">${SLOW}</p></section>
+    </div>
+  </div></main>${footer()}</div>`;
+}
+
+function Page404() {
+  return `<div class="v404wrap">${header()}<main id="main" tabindex="-1"><div class="wrap"><section class="v404">
+    <span class="code" aria-hidden="true">404</span><h1>This tunnel was never dug.</h1>
+    <p class="muted">The page you followed does not exist. The projects are all on the home page.</p>
+    <a class="btn" href="#top">Back to happydwarf.dev ${arrow}</a>
+    <ul aria-label="Project groups">${GROUPS.map((x) => `<li><a class="link" href="#${x.id}">${x.title}</a></li>`).join('')}</ul>
+  </section></div></main>${footer()}</div>`;
+}
+
+const VARIANTS = [
+  { key: 'A', name: 'Stacked groups', render: VariantA },
+  { key: 'B', name: 'Ledger', render: VariantB },
+  { key: 'C', name: 'Ecosystem map', render: VariantC },
+];
+const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+const fromUrl = new URLSearchParams(location.search).get('variant') || (location.hash.match(/^#variant-([abc])$/i) || [])[1];
+let idx = Math.max(0, VARIANTS.findIndex((v) => v.key === String(fromUrl || store.get('hd-proto-variant') || 'A').toUpperCase()));
+let show404 = false;
+let rm = store.get('hd-proto-rm') === '1';
+
+function render() {
+  const v = VARIANTS[idx];
+  document.getElementById('app').innerHTML = show404 ? Page404() : v.render();
+  document.getElementById('proto-label').innerHTML = `${v.key}<span class="name"> · ${v.name}</span>${show404 ? ' · 404' : ''}`;
+  document.getElementById('proto-404').setAttribute('aria-pressed', String(show404));
+  document.getElementById('proto-rm').setAttribute('aria-pressed', String(rm));
+  document.documentElement.classList.toggle('sim-rm', rm);
+  store.set('hd-proto-variant', v.key);
+  try { const u = new URL(location.href); u.searchParams.set('variant', v.key); history.replaceState(null, '', u); } catch {}
+}
+const go = (d) => { idx = (idx + d + VARIANTS.length) % VARIANTS.length; render(); };
+document.getElementById('proto-prev').onclick = () => go(-1);
+document.getElementById('proto-next').onclick = () => go(1);
+document.getElementById('proto-404').onclick = () => { show404 = !show404; render(); };
+document.getElementById('proto-rm').onclick = () => { rm = !rm; store.set('hd-proto-rm', rm ? '1' : '0'); render(); };
+document.addEventListener('keydown', (e) => {
+  if (e.target.closest('input, textarea, select, [contenteditable]')) return;
+  if (e.key === 'ArrowLeft') go(-1);
+  if (e.key === 'ArrowRight') go(1);
+});
+/* In the prototype, "#top" links (brand, 404 button) also leave the 404 view. */
+document.addEventListener('click', (e) => { const a = e.target.closest('a[href="#top"]'); if (a && show404) { show404 = false; render(); } });
+render();
+</script>
