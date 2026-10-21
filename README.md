@@ -9,3 +9,5 @@ Organization-wide files for [Happy Dwarf Team](https://github.com/happy-dwarf-te
   repository of the organization that does not have its own file of that kind.
 - [`docs/workshop-pages.md`](docs/workshop-pages.md) is the convention for Steam Workshop titles and
   descriptions of the team's mods and Anvil plugins.
+- [`tools/workshop-thumbnail/`](tools/workshop-thumbnail) generates the Workshop preview image of an
+  Anvil plugin in the Anvil website's style.
