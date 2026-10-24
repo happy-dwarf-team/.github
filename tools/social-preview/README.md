@@ -41,6 +41,8 @@ Run from the root of this repository, with the other repositories checked out ne
 | anvil-website | `--icon tools/workshop-thumbnail/assets/anvil-mark.svg --name "Anvil website" --subtitle "Install guide, plugin catalog" --subtitle "and docs for plugin authors" --kicker anvil.happydwarf.dev --anvil-mark` |
 | etch | `--icon ../etch/packages/extension/media/icon.svg --name Etch --subtitle "Live preview for" --subtitle "EU4 interface mods" --kicker "VS Code extension"` |
 | paradox-workshop-publish | `--icon tools/social-preview/assets/pdx-ws.svg --name pdx-ws --subtitle "Publish Paradox game mods" --subtitle "to the Steam Workshop" --kicker paradox-workshop-publish` |
+| happydwarf-website | `--icon tools/workshop-thumbnail/assets/happy-dwarf.svg --name "Happy Dwarf Team" --subtitle "Open-source tools and mods" --subtitle "for Europa Universalis IV" --kicker happydwarf.dev` |
+| etch-website | `--icon ../etch/packages/extension/media/icon.svg --name "Etch website" --subtitle "Demo, install and roadmap" --subtitle "of the EU4 interface preview" --kicker etch.happydwarf.dev` |
 
 ## Assets
 
