@@ -56,15 +56,35 @@ In this order. Skip a section that has nothing to say. Separate sections with th
    Then one line: Anvil asks again after every update, and the previously approved version keeps working until then.
 5. **What it doesn't touch:** checksum and ironman achievements, gameplay and multiplayer, and that unsubscribing leaves nothing behind. Only claim what the mod really does; for a mod of only `descriptor.mod` and `anvil/**` the checksum stays unchanged.
 6. **Current state** (optional): what works, what is still rough.
-7. **Required / Recommended / Compatible / Integrated mods** (optional): link lists.
-8. **Alternative download:** the GitHub repository.
-9. **FAQ:**
-   - 4–6 questions players really ask (load order, compatibility, "why do I have to approve it", "it didn't get faster");
-   - short answers, the joke after the answer;
-   - always end with the dwarf-head question (below).
-10. **Credits:**
+7. **Required / Recommended / Compatible / Integrated mods** (optional): link lists. They are for the mod's own dependencies and what it works with; the rest of the team's work goes in the next section.
+8. **More from Happy Dwarf Team:** every team page has it, in the format below.
+9. **Alternative download:** the GitHub repository.
+10. **FAQ:**
+    - 4–6 questions players really ask (load order, compatibility, "why do I have to approve it", "it didn't get faster");
+    - short answers, the joke after the answer;
+    - always end with the dwarf-head question (below).
+11. **Credits:**
     - the people and projects the mod builds on;
     - one personal, joking line at the end ("All dwarves for staying short and strong").
+
+### More from Happy Dwarf Team
+
+```markdown
+## More from Happy Dwarf Team
+- **[Anvil](https://anvil.happydwarf.dev/)**: <one plain sentence>
+- **[<another plugin or mod>](<its Workshop item>)**: <what it gives this page's player or tester>
+- **[Etch](https://etch.happydwarf.dev/)**: for interface modders, see your `.gui` window as the game draws it, right in VS Code.
+- Everything we make: [happydwarf.dev](https://happydwarf.dev/)
+```
+
+- **3–5 entries,** the last always the [happydwarf.dev](https://happydwarf.dev/) line.
+- **Only what helps this page's reader.** A player of a big overhaul gets the faster start; a page for testers or modders gets the tools. Skip the page's own mod and anything its reader has no use for.
+- **Links:** a Workshop mod links to its Workshop item, a tool to its website.
+- **One sentence per entry,** in a player's words, as the Tone section says: no internals, numbers only in human terms.
+
+### Measure it yourself
+
+A plugin that reports to Anvil's start-up benchmark (Anvil 1.5 or newer, the **Benchmark** tab in Anvil Manager) says so on its page: a short "Measure it yourself" section, or an FAQ entry of that name. In two or three sentences: open Anvil Manager, pick the plugin on the Benchmark tab, and it compares starts with and without it on the player's own computer. Link the privacy page ([benchmark-privacy.md](https://github.com/happy-dwarf-team/anvil/blob/main/docs/benchmark-privacy.md)) for what the report contains.
 
 ### The standing FAQ entry
 
