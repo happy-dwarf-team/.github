@@ -49,17 +49,17 @@ In this order. Skip a section that has nothing to say. Separate sections with th
    - **What you get:** 3–5 bullets, one line each, a bold lead-in first. A plugin that reports to Anvil's start-up benchmark says in one bullet that the **Benchmark** tab in Anvil Manager compares starts with and without it.
 
    Details that do not fit there (how it works, the settings) get a section of their own further down, not a longer overview.
-3. **Before you subscribe:** what must already be there.
-   - Required mods, as links, and anything to remove first.
-   - The supported game version and store: Steam, and whether the GOG build works (from GitHub, since GOG has no Workshop).
-   - **Anvil plugins: Anvil comes first, linked to [anvil.happydwarf.dev](https://anvil.happydwarf.dev/)**, with its minimum version, whose Download button is the easiest way in. Say plainly that the Workshop cannot install Anvil.
-4. **Getting it running** (Anvil plugins): numbered steps, one action each.
-   1. Subscribe and enable the mod in the playset.
-   2. Start the game; Anvil says a new plugin is waiting.
-   3. Approve the plugin in Anvil's panel (Ctrl+Shift+F12 → **Mods**) or in Anvil Manager.
-   4. Restart.
+3. **Install** (Anvil plugins): one section, written for a player who has never heard of Anvil.
+   - First what the plugin runs on: the game version and store, Steam and whether the GOG build works (from GitHub or the Manager's Catalog, since GOG has no Workshop). Anything to remove first comes here too.
+   - Then numbered steps, one action each, a bold verb first:
+     1. **Install [Anvil](https://anvil.happydwarf.dev/)** with its minimum version: download, run, click **Install Anvil**, with what to do if Windows warns about the file. Say plainly that this happens once and that the Workshop cannot do it.
+     2. **Subscribe** and enable the mod in the playset (with any mod it needs).
+     3. **Start the game:** Anvil says a plugin is waiting; approve it in Anvil's panel (Ctrl+Shift+F12 → **Mods**).
+     4. **Restart the game.**
 
-   Then one line: Anvil asks again after every update, and the previously approved version keeps working until then.
+     A plugin that needs another step (Tongs is switched on) adds it before the restart. Details such as approving in Anvil Manager belong on the plugin's page.
+   - Then one line: Anvil asks again after an update, and the previously approved version keeps working until then.
+4. **Before you subscribe** (mods that are not Anvil plugins): required mods as links, and the supported game version and store.
 5. **In the settings** (optional): the settings a player may want to change, by the name shown in Anvil, each with what it gives and whether it is on by default.
 6. **What it doesn't touch:** checksum and ironman achievements, gameplay and multiplayer, and that unsubscribing leaves nothing behind. Only claim what the mod really does; for a mod of only `descriptor.mod` and `anvil/**` the checksum stays unchanged.
 7. **Current state** or **Not there yet** (optional): what works, what is still rough.
@@ -86,8 +86,9 @@ A mod with a story behind its name tells it in a short "Why …?" section after 
 - Everything we make: [happydwarf.dev](https://happydwarf.dev/)
 ```
 
-- **3–5 entries,** the last always the [happydwarf.dev](https://happydwarf.dev/) line.
+- **3–6 entries,** the last always the [happydwarf.dev](https://happydwarf.dev/) line.
 - **Only what helps this page's reader.** A player of a big overhaul gets the faster start; a page for testers or modders gets the tools. Skip the page's own mod and anything its reader has no use for.
+- **Mei is on every page,** with the same sentence: a player who reads Chinese, Japanese or Korean should find it from any of our items. `scripts/team-consistency.py` in the lab checks this.
 - **Links:** a Workshop mod links to its Workshop item, a tool to its website.
 - **One sentence per entry,** in a player's words, as the Tone section says: no internals, numbers only in human terms.
 

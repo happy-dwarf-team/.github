@@ -4,7 +4,7 @@ Generates the Steam Workshop preview image of an Anvil plugin in the "dark forge
 
 The image is 1024×1024 and about 125 KB, well under Steam's 1 MB limit. It shows:
 - the plugin's icon in the accent colour, over a soft forge glow;
-- the name in JetBrains Mono, upper case, with the subtitle below;
+- the name in JetBrains Mono, upper case, with the subtitle below, or up to two measured gains (`--stat`) in place of the subtitle;
 - an "Anvil plugin" mark on the left and the Happy Dwarf Team logo on the right;
 - the accent bar along the bottom.
 
@@ -15,11 +15,13 @@ The image is 1024×1024 and about 125 KB, well under Steam's 1 MB limit. It show
 Needs Python 3 and ImageMagick 7 (`magick`, with its librsvg SVG renderer).
 
 ```sh
-python tools/workshop-thumbnail/make_thumbnail.py   --icon ../anvil-website/src/assets/plugins/bellows.svg   --name Bellows --subtitle "Faster Game Start"   --out ../bellows/workshop/thumbnail.png
+python tools/workshop-thumbnail/make_thumbnail.py   --icon ../anvil-website/src/assets/plugins/tongs.svg   --name Tongs --subtitle "Game Control for Scripts"   --out ../tongs/workshop/thumbnail.png
+python tools/workshop-thumbnail/make_thumbnail.py   --icon ../anvil-website/src/assets/plugins/bellows.svg   --name Bellows   --stat "START|41 → 13s|on our test machine" --stat "YEARS|10% faster|at speed 5"   --out ../bellows/workshop/thumbnail.png
 ```
 
 - **`--icon`:** the plugin's icon from anvil-website, `src/assets/plugins/<plugin id>.svg`. A plugin without one gets an icon there first, so the site and the Workshop show the same mark. The icon's `currentColor` becomes the accent `#f5922a`.
 - **`--name`, `--subtitle`:** the two parts of the Workshop title `<Name> - <subtitle>` (see [docs/workshop-pages.md](../../docs/workshop-pages.md)). Names longer than 8 characters get a smaller font.
+- **`--stat "LABEL|value|caption"`,** in place of `--subtitle`, once or twice: a measured gain in a panel, with a smaller icon. The value stays readable in the Workshop's list; the caption says what it measures at full size. Take the numbers from the plugin's README, rounded as on its Workshop page, and generate the image again when they change.
 
 Commit the result as the mod's `thumbnail.png` (`workshop/thumbnail.png` in plugin repositories).
 
