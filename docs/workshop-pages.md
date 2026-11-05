@@ -4,7 +4,7 @@ How Happy Dwarf Team mods and Anvil plugins present themselves on the Steam Work
 
 ## Title
 
-`<Name> - <subtitle>`, for example `Anbennar - Proper 2K UI` or `Bellows - Faster Game Start`.
+`<Name> - <subtitle>`, for example `Anbennar - Proper 2K UI` or `Bellows - Faster Start, Faster Game`.
 
 - **Subtitle:**
   - 2–4 words that say what the mod does, in a player's words;
