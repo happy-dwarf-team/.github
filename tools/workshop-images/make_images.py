@@ -80,7 +80,7 @@ CSS = """
 :root { --forge:#16171a; --surface:#1f2024; --accent:#f5922a; --cream:#f5f3ee; --muted:#a8a29e; }
 * { box-sizing:border-box; } html, body { margin:0; background:#000; }
 .shot { width:629px; font-family:JB, 'Microsoft YaHei', 'Microsoft JhengHei', sans-serif; color:var(--cream); overflow:hidden; }
-.half { width:220px; }
+.half { width:310px; }
 .ic { display:inline-block; color:var(--accent); flex:none; } .ic svg { width:100%; height:100%; display:block; }
 .banner { background:radial-gradient(120% 220% at 0% 50%, #3d2611 0%, var(--forge) 55%); border-bottom:2px solid var(--accent); padding:11px 16px; font-weight:800; font-size:17px; letter-spacing:.14em; display:flex; align-items:center; gap:12px; }
 .banner small { margin-left:auto; color:var(--muted); font-weight:400; font-size:11px; letter-spacing:.04em; }
@@ -126,6 +126,15 @@ def shots():
     return done
 
 
+# Transparent margins, in px, on Steam's fixed line layout (one line break between blocks): (top, bottom).
+MARGINS = (("-tiles-title", (20, 3)), ("-install", (20, 3)), ("-extra", (20, 3)), ("-faq", (20, 0)), ("-credits", (20, 0)),
+           ("collection-", (20, 0)), ("-hero", (0, 8)), ("-steps", (0, 8)), ("-tiles", (0, 8)))
+
+
+def margins(name):
+    return next((m for key, m in MARGINS if key in name), (0, 0))
+
+
 def chrome():
     found = os.environ.get("CHROME") or next(iter(sorted(glob.glob(os.path.expanduser(PATTERN)), reverse=True)), None)
     if not found:
@@ -135,7 +144,7 @@ def chrome():
 
 def render(items, out):
     # Steam shows an image at its natural size, up to its 629 px column. Anything wider is scaled by the
-    # browser and goes soft, so images are 629 px at scale 1, and the two buttons 220 px: Steam puts the link's domain after each, and all four must share a row.
+    # browser and goes soft, so images are 629 px at scale 1, and the two buttons 310 px, one above the other, each with the domain Steam puts after a link.
     # Each image is one screenshot on magenta, trimmed to its edges.
     tmp = Path(tempfile.mkdtemp())
     css = CSS.replace("FONT_R", (ASSETS / "JetBrainsMono-Regular.ttf").as_uri()).replace("FONT_B", (ASSETS / "JetBrainsMono-Bold.ttf").as_uri())
@@ -147,7 +156,9 @@ def render(items, out):
         sheet.write_text(f'<!doctype html><meta charset="utf-8"><style>{css}</style><div class="shot {cls}">{h}</div>', encoding="utf-8")
         png = tmp / f"{n}.png"
         subprocess.run(base + [f"--screenshot={png}", sheet.as_uri()], capture_output=True, timeout=60)
-        subprocess.run(["magick", str(png), "-trim", "+repage", "-strip", str(out / f"{n}.png")], check=True)
+        top, bottom = margins(n)
+        subprocess.run(["magick", str(png), "-trim", "+repage", "-background", "none", "-gravity", "north", "-splice", f"0x{top}",
+                        "-gravity", "south", "-splice", f"0x{bottom}", "-strip", f"PNG32:{out / f'{n}.png'}"], check=True)
     shutil.rmtree(tmp, ignore_errors=True)
     print(len(items), "images")
 
