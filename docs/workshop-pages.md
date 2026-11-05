@@ -37,64 +37,21 @@ Content mods keep their own artwork.
 
 ## Sections
 
-In this order. Skip a section that has nothing to say. Separate sections with the divider image:
+Anvil plugins, in this order. A section that has nothing to say goes. Images come from [`tools/workshop-images`](../tools/workshop-images) and are served from `https://anvil.happydwarf.dev/workshop/`; everything a player must search, copy or click stays text.
 
-```markdown
-![](https://i.imgur.com/Uf8Z21n.png)
-```
+1. **Hero image:** the plugin's name, a short tagline and two measured facts.
+2. **A short paragraph:** what the plugin gives the player, in two or three sentences.
+3. **Install:** the banner, the steps image (one action per step, a bold verb first in the source; a plugin that needs another step, like Tongs, adds it before the restart), then one paragraph with the minimum Anvil, the game versions, what to do if Windows warns about Anvil, and anything to remove first.
+4. **Tiles:** a banner and four tiles: what the plugin leaves alone, or what the player should know. Limits that matter stay honest; a sentence of text under the tiles may carry what four tiles can't.
+5. **Sections a plugin needs of its own**, as a banner and text, such as Mei's translation mods.
+6. **Buttons:** `SETTINGS AND DOCS` to the plugin's page on the Anvil website, `VIEW ON GITHUB` to the repository. Settings, the benchmark and how the plugin works live there, not here.
+7. **FAQ:** banner and text. The usual questions, at least: why approve it, GOG, the name if it has a story, and last the dwarf head on the thumbnail.
+8. **Credits:** banner and text, one line each, a bold name first. People and projects the plugin stands on come first, with their licence.
+9. **Collection button:** the image with the Happy Dwarf logo, linking to [our Workshop collection](https://steamcommunity.com/sharedfiles/filedetails/?id=3833899418). Content mods end with it too.
 
-1. **Opening line** (bold, no heading): one sentence that sells the mod.
-2. **Overview**, without a heading:
-   - a short paragraph: what the mod gives the player, in two or three sentences, with one human-scale number if there is one;
-   - **What you get:** 3–5 bullets, one line each, a bold lead-in first. A plugin that reports to Anvil's start-up benchmark says in one bullet that the **Benchmark** tab in Anvil Manager compares starts with and without it.
+Steam takes at most 8000 bytes of BBCode; an image adds about 60. Images stay under 1 MB. A translated page gets its own images.
 
-   Details that do not fit there (how it works, the settings) get a section of their own further down, not a longer overview.
-3. **Install** (Anvil plugins): one section, written for a player who has never heard of Anvil.
-   - First what the plugin runs on: the game version and store, Steam and whether the GOG build works (from GitHub or the Manager's Catalog, since GOG has no Workshop). Anything to remove first comes here too.
-   - Then numbered steps, one action each, a bold verb first:
-     1. **Install [Anvil](https://anvil.happydwarf.dev/)** with its minimum version: download, run, click **Install Anvil**, with what to do if Windows warns about the file. Say plainly that this happens once and that the Workshop cannot do it.
-     2. **Subscribe** and enable the mod in the playset (with any mod it needs).
-     3. **Start the game:** Anvil says a plugin is waiting; approve it in Anvil's panel (Ctrl+Shift+F12 → **Mods**).
-     4. **Restart the game.**
-
-     A plugin that needs another step (Tongs is switched on) adds it before the restart. Details such as approving in Anvil Manager belong on the plugin's page.
-   - Then one line: Anvil asks again after an update, and the previously approved version keeps working until then.
-4. **Before you subscribe** (mods that are not Anvil plugins): required mods as links, and the supported game version and store.
-5. **In the settings** (optional): the settings a player may want to change, by the name shown in Anvil, each with what it gives and whether it is on by default.
-6. **What it doesn't touch:** checksum and ironman achievements, gameplay and multiplayer, and that unsubscribing leaves nothing behind. Only claim what the mod really does; for a mod of only `descriptor.mod` and `anvil/**` the checksum stays unchanged.
-7. **Current state** or **Not there yet** (optional): what works, what is still rough.
-8. **Required / Recommended / Compatible / Integrated mods** (optional): link lists. They are for the mod's own dependencies and what it works with; the rest of the team's work goes in the next section.
-9. **More from Happy Dwarf Team:** every team page has it, in the format below.
-10. **Alternative download:** the GitHub repository (and, for an Anvil plugin, its page on anvil.happydwarf.dev).
-11. **FAQ:**
-    - 4–6 questions players really ask (load order, compatibility, "why do I have to approve it", "it didn't get faster", "I play on GOG");
-    - short answers, the joke after the answer;
-    - always end with the dwarf-head question (below).
-12. **Credits:**
-    - the people and projects the mod builds on, with the licence notice where the original's licence asks for one;
-    - one personal, joking line at the end ("All dwarves for staying short and strong").
-
-A mod with a story behind its name tells it in a short "Why …?" section after the overview.
-
-### More from Happy Dwarf Team
-
-```markdown
-## More from Happy Dwarf Team
-- **[Anvil](https://anvil.happydwarf.dev/)**: <one plain sentence>
-- **[<another plugin or mod>](<its Workshop item>)**: <what it gives this page's player or tester>
-- **[Etch](https://etch.happydwarf.dev/)**: for interface modders, see your `.gui` window as the game draws it, right in VS Code.
-- Everything we make: [happydwarf.dev](https://happydwarf.dev/)
-```
-
-- **3–6 entries,** the last always the [happydwarf.dev](https://happydwarf.dev/) line.
-- **Only what helps this page's reader.** A player of a big overhaul gets the faster start; a page for testers or modders gets the tools. Skip the page's own mod and anything its reader has no use for.
-- **Mei is on every page,** with the same sentence: a player who reads Chinese, Japanese or Korean should find it from any of our items. `scripts/team-consistency.py` in the lab checks this.
-- **Links:** a Workshop mod links to its Workshop item, a tool to its website.
-- **One sentence per entry,** in a player's words, as the Tone section says: no internals, numbers only in human terms.
-
-### Measure it yourself
-
-A plugin that reports to Anvil's start-up benchmark (Anvil 1.5 or newer, the **Benchmark** tab in Anvil Manager) says so on its page: a short "Measure it yourself" section, or an FAQ entry of that name. In two or three sentences: open Anvil Manager, pick the plugin on the Benchmark tab, and it compares starts with and without it on the player's own computer. Link the privacy page ([benchmark-privacy.md](https://github.com/happy-dwarf-team/anvil/blob/main/docs/benchmark-privacy.md)) for what the report contains.
+Content mods stay text: required mods, the game version, what the mod doesn't touch, link lists, FAQ, Credits, and the collection button at the end.
 
 ### The standing FAQ entry
 
