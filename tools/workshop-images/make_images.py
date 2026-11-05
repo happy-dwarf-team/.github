@@ -79,25 +79,25 @@ CSS = """
 @font-face { font-family:JB; font-weight:700 800; src:url('FONT_B'); }
 :root { --forge:#16171a; --surface:#1f2024; --accent:#f5922a; --cream:#f5f3ee; --muted:#a8a29e; }
 * { box-sizing:border-box; } html, body { margin:0; background:#000; }
-.shot { width:636px; font-family:JB, 'Microsoft YaHei', 'Microsoft JhengHei', sans-serif; color:var(--cream); overflow:hidden; }
-.half { width:314px; }
+.shot { width:629px; font-family:JB, 'Microsoft YaHei', 'Microsoft JhengHei', sans-serif; color:var(--cream); overflow:hidden; }
+.half { width:310px; }
 .ic { display:inline-block; color:var(--accent); flex:none; } .ic svg { width:100%; height:100%; display:block; }
 .banner { background:radial-gradient(120% 220% at 0% 50%, #3d2611 0%, var(--forge) 55%); border-bottom:2px solid var(--accent); padding:11px 16px; font-weight:800; font-size:17px; letter-spacing:.14em; display:flex; align-items:center; gap:12px; }
 .banner small { margin-left:auto; color:var(--muted); font-weight:400; font-size:11px; letter-spacing:.04em; }
 .hero { background:radial-gradient(70% 120% at 50% 0%, #3d2611 0%, var(--forge) 70%); padding:20px; border-bottom:3px solid var(--accent); }
 .top { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
-.name { font-weight:800; font-size:34px; letter-spacing:.12em; line-height:1.1; } .sub { color:var(--muted); font-size:12.5px; }
+.name { font-weight:800; font-size:34px; letter-spacing:.12em; line-height:1.1; } .sub { color:var(--muted); font-size:13.5px; }
 .stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.stat { background:var(--surface); border-radius:8px; padding:10px 12px; } .k { font-weight:700; font-size:12px; letter-spacing:.1em; } .v { color:var(--accent); font-weight:800; font-size:27px; line-height:1.25; white-space:nowrap; } .c { color:var(--muted); font-size:11px; }
+.stat { background:var(--surface); border-radius:8px; padding:10px 12px; } .k { font-weight:700; font-size:12px; letter-spacing:.1em; } .v { color:var(--accent); font-weight:800; font-size:27px; line-height:1.25; white-space:nowrap; } .c { color:var(--muted); font-size:12.5px; }
 .steps { display:grid; gap:8px; background:var(--forge); padding:12px; }
-.step { background:var(--surface); border-top:3px solid var(--accent); border-radius:4px; padding:9px; } .n { color:var(--accent); font-weight:800; font-size:22px; line-height:1; } .t { font-weight:700; font-size:12px; margin:6px 0 3px; } .d { color:var(--muted); font-size:10.5px; line-height:1.35; }
+.step { background:var(--surface); border-top:3px solid var(--accent); border-radius:4px; padding:9px; } .n { color:var(--accent); font-weight:800; font-size:22px; line-height:1; } .t { font-weight:700; font-size:12px; margin:6px 0 3px; } .d { color:var(--muted); font-size:12px; line-height:1.35; }
 .tiles { display:grid; grid-template-columns:1fr 1fr; gap:8px; background:var(--forge); padding:12px; }
-.tile { background:var(--surface); border-left:3px solid var(--accent); padding:10px 12px; } .tile .t { font-size:13px; margin:0; } .tile .d { font-size:11px; margin-top:3px; }
+.tile { background:var(--surface); border-left:3px solid var(--accent); padding:10px 12px; } .tile .t { font-size:13px; margin:0; } .tile .d { font-size:12px; margin-top:3px; }
 .btn { display:flex; align-items:center; justify-content:space-between; background:var(--accent); color:var(--forge); font-weight:800; font-size:13px; letter-spacing:.08em; padding:15px 16px; }
 .btn.ghost { background:var(--forge); color:var(--accent); box-shadow:inset 0 0 0 2px var(--accent); }
 .arrow { font-size:18px; line-height:1; }
 .coll { display:flex; align-items:center; gap:14px; background:radial-gradient(120% 220% at 100% 50%, #3d2611 0%, var(--forge) 60%); box-shadow:inset 0 0 0 2px var(--accent); padding:12px 16px; }
-.ct { flex:1; } .cn { font-weight:800; letter-spacing:.1em; font-size:16px; } .cs { color:var(--muted); font-size:11.5px; margin-top:3px; } .coll .arrow { color:var(--accent); }
+.ct { flex:1; } .cn { font-weight:800; letter-spacing:.1em; font-size:16px; } .cs { color:var(--muted); font-size:12.5px; margin-top:3px; } .coll .arrow { color:var(--accent); }
 """
 
 
@@ -134,20 +134,20 @@ def chrome():
 
 
 def render(items, out):
+    # Steam shows an image at its natural size, up to its 629 px column. Anything wider is scaled by the
+    # browser and goes soft, so images are 629 px at scale 1, and the two buttons 310 px to share a row.
     # Each image is one screenshot on magenta, trimmed to its edges.
     tmp = Path(tempfile.mkdtemp())
     css = CSS.replace("FONT_R", (ASSETS / "JetBrainsMono-Regular.ttf").as_uri()).replace("FONT_B", (ASSETS / "JetBrainsMono-Bold.ttf").as_uri())
     css += "html, body { background:#ff00ff !important; }"
     out.mkdir(parents=True, exist_ok=True)
-    base = [chrome(), "--disable-gpu", "--no-sandbox", "--hide-scrollbars", f"--user-data-dir={tmp/'edge'}", "--allow-file-access-from-files", "--virtual-time-budget=2500", "--force-device-scale-factor=2", "--window-size=640,420"]
+    base = [chrome(), "--disable-gpu", "--no-sandbox", "--hide-scrollbars", f"--user-data-dir={tmp/'edge'}", "--allow-file-access-from-files", "--virtual-time-budget=2500", "--force-device-scale-factor=1", "--font-render-hinting=medium", "--disable-lcd-text", "--window-size=640,420"]
     for n, (cls, h) in items.items():
         sheet = tmp / f"{n}.html"
         sheet.write_text(f'<!doctype html><meta charset="utf-8"><style>{css}</style><div class="shot {cls}">{h}</div>', encoding="utf-8")
         png = tmp / f"{n}.png"
         subprocess.run(base + [f"--screenshot={png}", sheet.as_uri()], capture_output=True, timeout=60)
-        # Steam shows an image at its natural size, up to its 629 px column, so two buttons fit a row only at 310 px.
-        size = ["-filter", "Lanczos", "-resize", "310x"] if cls == "half" else []
-        subprocess.run(["magick", str(png), "-trim", "+repage", *size, "-strip", str(out / f"{n}.png")], check=True)
+        subprocess.run(["magick", str(png), "-trim", "+repage", "-strip", str(out / f"{n}.png")], check=True)
     shutil.rmtree(tmp, ignore_errors=True)
     print(len(items), "images")
 
