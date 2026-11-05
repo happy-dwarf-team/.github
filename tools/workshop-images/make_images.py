@@ -26,23 +26,23 @@ DWARF = re.sub(r' (width|height)="[^"]+"', "", (ASSETS / "happy-dwarf.svg").read
 PAGES = {
     "bellows": dict(
         repo="bellows", icon="bellows", name="BELLOWS", tag="Faster EU4.",
-        stats=[("START", "41 → 13s", "10 mods, our test machine"), ("YEARS", "27 → 20s", "year 1720, speed 5")],
+        stats=[("START", "41 → 13s", "10 mods, our test machine"), ("YEARS", "27 → 20s", "one save, 1720, speed 5")],
         steps=[("Install Anvil", "Once. Run it, click Install Anvil."), ("Subscribe", "Enable Bellows in your playset."), ("Approve", "Ctrl+Shift+F12, Mods, approve."), ("Restart", "Done. Enjoy the shorter wait.")],
         tiles_title="WHAT IT DOESN'T TOUCH",
-        tiles=[("Same rules", "No game files or rules change."), ("Ironman stays", "Achievements stay available."), ("Multiplayer in sync", "233 days, no out-of-sync."), ("Check it yourself", "Benchmark tab in Anvil Manager.")],
+        tiles=[("Same rules", "No game files or rules change."), ("Ironman stays", "The game still offers achievements."), ("Multiplayer", "Host only, 0.17: 233 days in sync."), ("Check it yourself", "Benchmark tab in Anvil Manager.")],
     ),
     "hamweard": dict(
         repo="hamweard", icon="hamweard", name="HAMWEARD", tag="Home to the menu. No restart.",
         stats=[("BACK TO MENU", "4s", "usually, without a restart"), ("TESTED", "66 returns", "in one day, no crash")],
         steps=[("Install Anvil", "Once. Run it, click Install Anvil."), ("Subscribe", "Enable Hamweard in your playset."), ("Approve", "Ctrl+Shift+F12, Mods, approve."), ("Restart", "From then on, no more restarts.")],
         tiles_title="GOOD TO KNOW",
-        tiles=[("Ironman", "Off unless you allow it in Anvil."), ("Multiplayer", "Exit to Menu restarts as usual."), ("Canals", "After a save with one, a restart."), ("Your saves", "Nothing is left in them.")],
+        tiles=[("Ironman", "Off unless you allow it in Anvil."), ("Multiplayer", "Off. Sessions not tested."), ("Canals", "After a save with one, a restart."), ("Your saves", "No plugin data in them.")],
     ),
     "tongs": dict(
         repo="tongs", icon="tongs", name="TONGS", tag="Scripts and AI agents, through the front door.",
-        stats=[("SEE", "the game", "date, speed, windows, events"), ("PLAY", "if allowed", "keys, clicks, console: one switch each")],
+        stats=[("SEE", "the game", "date, speed, windows, events"), ("PLAY", "if allowed", "input and console: a switch each")],
         steps=[("Install Anvil", "Once. Run it, click Install Anvil."), ("Subscribe", "Enable Tongs in your playset."), ("Approve", "Ctrl+Shift+F12, Mods, approve."), ("Switch on", "Same panel. It starts off."), ("Restart", "Point your script at it.")],
-        tiles_title="SAFE BY DEFAULT",
+        tiles_title="OFF BY DEFAULT",
         tiles=[("Starts off", "It does nothing until you say so."), ("Your PC only", "No one on the internet gets in."), ("Reading changes nothing", "Input needs its own switch."), ("Ready clients", "PowerShell, Python, MCP.")],
     ),
     "mei": dict(
