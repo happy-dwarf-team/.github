@@ -25,11 +25,11 @@ DWARF = re.sub(r' (width|height)="[^"]+"', "", (ASSETS / "happy-dwarf.svg").read
 
 PAGES = {
     "bellows": dict(
-        repo="bellows", icon="bellows", name="BELLOWS", tag="Faster EU4. Same game.",
+        repo="bellows", icon="bellows", name="BELLOWS", tag="Faster EU4.",
         stats=[("START", "41 → 13s", "10 mods, our test machine"), ("YEARS", "27 → 20s", "year 1720, speed 5")],
         steps=[("Install Anvil", "Once. Run it, click Install Anvil."), ("Subscribe", "Enable Bellows in your playset."), ("Approve", "Ctrl+Shift+F12, Mods, approve."), ("Restart", "Done. Enjoy the shorter wait.")],
         tiles_title="WHAT IT DOESN'T TOUCH",
-        tiles=[("Same game", "No game files or rules change."), ("Ironman stays", "Achievements stay available."), ("Multiplayer in sync", "233 days, no out-of-sync."), ("Check it yourself", "Benchmark tab in Anvil Manager.")],
+        tiles=[("Same rules", "No game files or rules change."), ("Ironman stays", "Achievements stay available."), ("Multiplayer in sync", "233 days, no out-of-sync."), ("Check it yourself", "Benchmark tab in Anvil Manager.")],
     ),
     "hamweard": dict(
         repo="hamweard", icon="hamweard", name="HAMWEARD", tag="Home to the menu. No restart.",
