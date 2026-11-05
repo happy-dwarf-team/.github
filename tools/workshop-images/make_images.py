@@ -145,7 +145,9 @@ def render(items, out):
         sheet.write_text(f'<!doctype html><meta charset="utf-8"><style>{css}</style><div class="shot {cls}">{h}</div>', encoding="utf-8")
         png = tmp / f"{n}.png"
         subprocess.run(base + [f"--screenshot={png}", sheet.as_uri()], capture_output=True, timeout=60)
-        subprocess.run(["magick", str(png), "-trim", "+repage", "-strip", str(out / f"{n}.png")], check=True)
+        # Steam shows an image at its natural size, up to its 629 px column, so two buttons fit a row only at 310 px.
+        size = ["-filter", "Lanczos", "-resize", "310x"] if cls == "half" else []
+        subprocess.run(["magick", str(png), "-trim", "+repage", *size, "-strip", str(out / f"{n}.png")], check=True)
     shutil.rmtree(tmp, ignore_errors=True)
     print(len(items), "images")
 
