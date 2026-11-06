@@ -36,7 +36,7 @@ PAGES = {
         stats=[("BACK TO MENU", "4s", "usually, without a restart"), ("TESTED", "66 returns", "in one day, no crash")],
         steps=[("Install Anvil", "Once. Run it, click Install Anvil."), ("Subscribe", "Enable Hamweard in your playset."), ("Approve", "Ctrl+Shift+F12, Mods, approve."), ("Restart", "From then on, no more restarts.")],
         tiles_title="GOOD TO KNOW",
-        tiles=[("Ironman", "Off unless you allow it in Anvil."), ("Multiplayer", "Off. Sessions not tested."), ("Canals", "After a save with one, a restart."), ("Your saves", "No plugin data in them.")],
+        tiles=[("Ironman", "Off unless you allow it in Anvil."), ("Multiplayer", "Off. Sessions not tested."), ("Canals", "A return puts the map back."), ("Your saves", "No plugin data in them.")],
     ),
     "tongs": dict(
         repo="tongs", icon="tongs", name="TONGS", tag="Scripts and AI agents, through the front door.",
