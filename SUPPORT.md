@@ -15,7 +15,7 @@
 - **Etch or the Workshop publishing tool:** [etch.happydwarf.dev](https://etch.happydwarf.dev)
   and the [paradox-workshop-publish guides](https://github.com/happy-dwarf-team/paradox-workshop-publish/tree/main/docs/guide).
 - **Questions, chat and release news:** our
-  [Discord server](https://discord.gg/e63JfruWUg).
+  [Discord server](https://discord.happydwarf.dev/).
 - **A security problem:** report it privately, see
   [SECURITY.md](SECURITY.md).
 - **Behaviour in the community:** see the
@@ -29,7 +29,7 @@ plugins loaded belong to
 [Anvil](https://github.com/happy-dwarf-team/anvil/issues/new/choose).
 
 No GitHub account, or not sure it is a bug? Post in #help-and-bugs on our
-[Discord server](https://discord.gg/e63JfruWUg), and ideas in #ideas. What we
+[Discord server](https://discord.happydwarf.dev/), and ideas in #ideas. What we
 take on moves to GitHub issues.
 
 For a problem with a plugin, **Copy a problem report** on the Anvil Manager's
