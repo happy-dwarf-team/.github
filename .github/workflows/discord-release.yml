@@ -1,0 +1,82 @@
+name: discord-release
+
+# Posts a published release to #releases on the team's Discord server. Projects
+# call it where the release becomes public: release.yml in Anvil and Etch (a
+# release published with GITHUB_TOKEN starts no `release` workflow) and
+# website.yml in the plugins. Run it by hand to post a release again.
+#
+# Needs the organization secret DISCORD_RELEASES_WEBHOOK, the URL of the webhook
+# in #releases. Without it the job leaves a notice and posts nothing.
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: The published release tag
+        type: string
+        required: true
+    secrets:
+      DISCORD_RELEASES_WEBHOOK:
+        required: false
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: The repository of the release, e.g. happy-dwarf-team/bellows
+        type: string
+        required: true
+      tag:
+        description: The release tag, e.g. v1.3.0
+        type: string
+        required: true
+
+permissions: {}
+
+jobs:
+  post:
+    runs-on: ubuntu-24.04
+    permissions: {}
+    env:
+      WEBHOOK: ${{ secrets.DISCORD_RELEASES_WEBHOOK }}
+      REPOSITORY: ${{ inputs.repository || github.repository }}
+      TAG: ${{ inputs.tag }}
+    steps:
+      - name: Post the release
+        if: env.WEBHOOK != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          project="${REPOSITORY##*/}"
+          gh api "repos/${REPOSITORY}/releases/tags/${TAG}" > release.json
+          jq --arg title "${project^} ${TAG}" '
+            def notes:
+              "\n" + (.body // "")
+              | gsub("\r"; "")
+              | sub("^\n## [^\n]*"; "")
+              | gsub(" \\(\\[[0-9a-f]{7,40}\\]\\([^)]*\\)\\)"; "")
+              | gsub("\n### (?<heading>[^\n]*)"; "\n**\(.heading)**")
+              | gsub("\n\\* "; "\n- ")
+              | gsub("\n{3,}"; "\n\n")
+              | sub("^\n+"; "")
+              | sub("\n+$"; "");
+            def shorten($limit):
+              if length <= $limit then .
+              else (.[:$limit] | sub("\n[^\n]*$"; "")) + "\n…"
+              end;
+            {
+              avatar_url: "https://happydwarf.dev/logo.png",
+              allowed_mentions: {parse: []},
+              embeds: [{
+                title: $title,
+                url: .html_url,
+                description: (notes | shorten(1800)),
+                color: 16093738,
+                timestamp: .published_at
+              }]
+            }' release.json > payload.json
+          curl --fail-with-body --silent --show-error --retry 3 --retry-all-errors \
+            --header 'Content-Type: application/json' \
+            --data @payload.json "${WEBHOOK}"
+
+      - name: Skip the post (no DISCORD_RELEASES_WEBHOOK)
+        if: env.WEBHOOK == ''
+        run: echo "::notice::DISCORD_RELEASES_WEBHOOK is not set; ${REPOSITORY} ${TAG} not posted"
