@@ -7,6 +7,12 @@ name: discord-release
 #
 # Needs the organization secret DISCORD_RELEASES_WEBHOOK, the URL of the webhook
 # in #releases. Without it the job leaves a notice and posts nothing.
+#
+# #releases is an announcement channel, and a webhook cannot publish its own
+# post to the servers that follow it. With DISCORD_BOT_TOKEN, the token of the
+# team's bot (Manage Messages in #releases), the job publishes the post as the
+# Publish button does. A failed publish leaves a warning instead of failing the
+# job, so a rerun does not post the release twice.
 on:
   workflow_call:
     inputs:
@@ -16,6 +22,8 @@ on:
         required: true
     secrets:
       DISCORD_RELEASES_WEBHOOK:
+        required: false
+      DISCORD_BOT_TOKEN:
         required: false
   workflow_dispatch:
     inputs:
@@ -44,6 +52,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
         run: |
           project="${REPOSITORY##*/}"
           gh api "repos/${REPOSITORY}/releases/tags/${TAG}" > release.json
@@ -73,9 +82,26 @@ jobs:
                 timestamp: .published_at
               }]
             }' release.json > payload.json
+          # wait=true makes Discord return the message, whose ID the publish needs.
+          if [[ "${WEBHOOK}" == *\?* ]]; then url="${WEBHOOK}&wait=true"; else url="${WEBHOOK}?wait=true"; fi
           curl --fail-with-body --silent --show-error --retry 3 --retry-all-errors \
             --header 'Content-Type: application/json' \
-            --data @payload.json "${WEBHOOK}"
+            --data @payload.json --output message.json "${url}"
+
+          if [[ -z "${BOT_TOKEN}" ]]; then
+            echo "::notice::DISCORD_BOT_TOKEN is not set; ${REPOSITORY} ${TAG} posted but not published to followers"
+            exit 0
+          fi
+          channel="$(jq -r '.channel_id' message.json)"
+          message="$(jq -r '.id' message.json)"
+          if curl --fail-with-body --silent --show-error --retry 3 --retry-all-errors \
+            --request POST --header "Authorization: Bot ${BOT_TOKEN}" \
+            --output crosspost.json \
+            "https://discord.com/api/v10/channels/${channel}/messages/${message}/crosspost"; then
+            echo "Published message ${message} to the followers of #releases"
+          else
+            echo "::warning::${REPOSITORY} ${TAG} posted as message ${message} but not published: $(cat crosspost.json 2>/dev/null)"
+          fi
 
       - name: Skip the post (no DISCORD_RELEASES_WEBHOOK)
         if: env.WEBHOOK == ''
