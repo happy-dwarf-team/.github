@@ -12,7 +12,7 @@ verification keep working.
 ### Get involved
 
 Bug reports and ideas go to the issues of the project they concern. For questions, chat and
-release news, join our [Discord server](https://discord.gg/e63JfruWUg). Each repository's
+release news, join our [Discord server](https://discord.happydwarf.dev/). Each repository's
 `CONTRIBUTING.md` explains how to send a change, `SECURITY.md` how to report a vulnerability
 privately, and `SUPPORT.md` where to ask for help.
 
