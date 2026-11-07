@@ -14,6 +14,8 @@
   and the [plugin template](https://github.com/happy-dwarf-team/anvil-plugin-template).
 - **Etch or the Workshop publishing tool:** [etch.happydwarf.dev](https://etch.happydwarf.dev)
   and the [paradox-workshop-publish guides](https://github.com/happy-dwarf-team/paradox-workshop-publish/tree/main/docs/guide).
+- **Questions, chat and release news:** our
+  [Discord server](https://discord.gg/e63JfruWUg).
 - **A security problem:** report it privately, see
   [SECURITY.md](SECURITY.md).
 - **Behaviour in the community:** see the
@@ -21,16 +23,20 @@
 
 ## Reporting a bug or an idea
 
-GitHub issues are the one place where reports are tracked and answered. Open
-one in the repository it concerns; its form asks for what we need. Problems that
-also happen with no plugins loaded belong to
+GitHub issues are where reports are tracked. Open one in the repository it
+concerns; its form asks for what we need. Problems that also happen with no
+plugins loaded belong to
 [Anvil](https://github.com/happy-dwarf-team/anvil/issues/new/choose).
+
+No GitHub account, or not sure it is a bug? Post in #help-and-bugs on our
+[Discord server](https://discord.gg/e63JfruWUg), and ideas in #ideas. What we
+take on moves to GitHub issues.
 
 For a problem with a plugin, **Copy a problem report** on the Anvil Manager's
 **Log** tab (Anvil 1.9 or newer) puts the versions, the game build, the plugins
 and the end of the log on your clipboard, without your paths and user name.
 
 We read the comments on our Steam Workshop pages too, but not every day, so a
-bug reported there can wait a while. We have no Discord.
+bug reported there can wait a while.
 
 These are volunteer projects, so answers can take a few days.
