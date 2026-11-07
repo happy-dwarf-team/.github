@@ -35,6 +35,10 @@ on:
         description: The release tag, e.g. v1.3.0
         type: string
         required: true
+      message:
+        description: ID of a post already in #releases to publish without posting again
+        type: string
+        required: false
 
 permissions: {}
 
@@ -46,6 +50,7 @@ jobs:
       WEBHOOK: ${{ secrets.DISCORD_RELEASES_WEBHOOK }}
       REPOSITORY: ${{ inputs.repository || github.repository }}
       TAG: ${{ inputs.tag }}
+      MESSAGE: ${{ inputs.message }}
     steps:
       - name: Post the release
         if: env.WEBHOOK != ''
@@ -54,39 +59,46 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
         run: |
-          project="${REPOSITORY##*/}"
-          gh api "repos/${REPOSITORY}/releases/tags/${TAG}" > release.json
-          jq --arg title "${project^} ${TAG}" '
-            def notes:
-              "\n" + (.body // "")
-              | gsub("\r"; "")
-              | sub("^\n## [^\n]*"; "")
-              | gsub(" \\(\\[[0-9a-f]{7,40}\\]\\([^)]*\\)\\)"; "")
-              | gsub("\n### (?<heading>[^\n]*)"; "\n**\(.heading)**")
-              | gsub("\n\\* "; "\n- ")
-              | gsub("\n{3,}"; "\n\n")
-              | sub("^\n+"; "")
-              | sub("\n+$"; "");
-            def shorten($limit):
-              if length <= $limit then .
-              else (.[:$limit] | sub("\n[^\n]*$"; "")) + "\n…"
-              end;
-            {
-              avatar_url: "https://happydwarf.dev/logo.png",
-              allowed_mentions: {parse: []},
-              embeds: [{
-                title: $title,
-                url: .html_url,
-                description: (notes | shorten(1800)),
-                color: 16093738,
-                timestamp: .published_at
-              }]
-            }' release.json > payload.json
-          # wait=true makes Discord return the message, whose ID the publish needs.
-          if [[ "${WEBHOOK}" == *\?* ]]; then url="${WEBHOOK}&wait=true"; else url="${WEBHOOK}?wait=true"; fi
-          curl --fail-with-body --silent --show-error --retry 3 --retry-all-errors \
-            --header 'Content-Type: application/json' \
-            --data @payload.json --output message.json "${url}"
+          if [[ -n "${MESSAGE}" ]]; then
+            # Publish-only run: the webhook itself says which channel the post is in.
+            curl --fail-with-body --silent --show-error --retry 3 --retry-all-errors \
+              --output webhook.json "${WEBHOOK}"
+            jq --arg id "${MESSAGE}" '{id: $id, channel_id}' webhook.json > message.json
+          else
+            project="${REPOSITORY##*/}"
+            gh api "repos/${REPOSITORY}/releases/tags/${TAG}" > release.json
+            jq --arg title "${project^} ${TAG}" '
+              def notes:
+                "\n" + (.body // "")
+                | gsub("\r"; "")
+                | sub("^\n## [^\n]*"; "")
+                | gsub(" \\(\\[[0-9a-f]{7,40}\\]\\([^)]*\\)\\)"; "")
+                | gsub("\n### (?<heading>[^\n]*)"; "\n**\(.heading)**")
+                | gsub("\n\\* "; "\n- ")
+                | gsub("\n{3,}"; "\n\n")
+                | sub("^\n+"; "")
+                | sub("\n+$"; "");
+              def shorten($limit):
+                if length <= $limit then .
+                else (.[:$limit] | sub("\n[^\n]*$"; "")) + "\n…"
+                end;
+              {
+                avatar_url: "https://happydwarf.dev/logo.png",
+                allowed_mentions: {parse: []},
+                embeds: [{
+                  title: $title,
+                  url: .html_url,
+                  description: (notes | shorten(1800)),
+                  color: 16093738,
+                  timestamp: .published_at
+                }]
+              }' release.json > payload.json
+            # wait=true makes Discord return the message, whose ID the publish needs.
+            if [[ "${WEBHOOK}" == *\?* ]]; then url="${WEBHOOK}&wait=true"; else url="${WEBHOOK}?wait=true"; fi
+            curl --fail-with-body --silent --show-error --retry 3 --retry-all-errors \
+              --header 'Content-Type: application/json' \
+              --data @payload.json --output message.json "${url}"
+          fi
 
           if [[ -z "${BOT_TOKEN}" ]]; then
             echo "::notice::DISCORD_BOT_TOKEN is not set; ${REPOSITORY} ${TAG} posted but not published to followers"
@@ -100,7 +112,9 @@ jobs:
             "https://discord.com/api/v10/channels/${channel}/messages/${message}/crosspost"; then
             echo "Published message ${message} to the followers of #releases"
           else
-            echo "::warning::${REPOSITORY} ${TAG} posted as message ${message} but not published: $(cat crosspost.json 2>/dev/null)"
+            bot="$(curl --silent --header "Authorization: Bot ${BOT_TOKEN}" \
+              https://discord.com/api/v10/users/@me | jq -r '"\(.username) (\(.id))"' 2>/dev/null || true)"
+            echo "::warning::${REPOSITORY} ${TAG}: message ${message} not published by ${bot:-an unknown bot}: $(cat crosspost.json 2>/dev/null)"
           fi
 
       - name: Skip the post (no DISCORD_RELEASES_WEBHOOK)
