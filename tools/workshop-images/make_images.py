@@ -22,10 +22,9 @@ def icon(name):
 
 
 DWARF = re.sub(r' (width|height)="[^"]+"', "", (ASSETS / "happy-dwarf.svg").read_text(encoding="utf-8"))
-# A speech bubble for the Discord button: our own drawing, not Discord's logo.
-CHAT = ('<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round">'
-        '<path d="M10 12h44a4 4 0 0 1 4 4v24a4 4 0 0 1-4 4H30l-12 10v-10h-8a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4z"/>'
-        '<path d="M20 25h24M20 33h16" stroke-linecap="round"/></svg>')
+# Discord's mark, from the icon set of Starlight (MIT), which the Anvil website already ships. Discord's
+# brand guidelines allow it on a link to a server, unaltered, in white, black or Blurple (#5865F2).
+DISCORD = (Path(__file__).parent / "discord-mark.svg").read_text(encoding="utf-8")
 
 PAGES = {
     "bellows": dict(
@@ -131,7 +130,7 @@ def shots():
         done.setdefault(f"collection-{suffix}", ("", f'<div class="coll"><span class="ic" style="width:64px;height:64px">{DWARF}</span><div class="ct"><div class="cn">{coll}</div><div class="cs">{sub}</div></div><span class="arrow">→</span></div>'))
         talk = lab.get("discord", "ASK US ON DISCORD")
         talksub = lab.get("discordsub", "Help, bugs and ideas: #help-and-bugs")
-        done.setdefault(f"discord-{suffix}", ("", f'<div class="coll"><span class="ic" style="width:44px;height:44px">{CHAT}</span><div class="ct"><div class="cn">{html.escape(talk)}</div><div class="cs">{html.escape(talksub)}</div></div><span class="arrow">→</span></div>'))
+        done.setdefault(f"discord-{suffix}", ("", f'<div class="coll"><span class="ic" style="width:48px;height:48px;color:#5865f2">{DISCORD}</span><div class="ct"><div class="cn">{html.escape(talk)}</div><div class="cs">{html.escape(talksub)}</div></div><span class="arrow">→</span></div>'))
     return done
 
 
