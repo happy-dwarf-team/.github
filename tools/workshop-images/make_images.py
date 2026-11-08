@@ -22,6 +22,10 @@ def icon(name):
 
 
 DWARF = re.sub(r' (width|height)="[^"]+"', "", (ASSETS / "happy-dwarf.svg").read_text(encoding="utf-8"))
+# A speech bubble for the Discord button: our own drawing, not Discord's logo.
+CHAT = ('<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round">'
+        '<path d="M10 12h44a4 4 0 0 1 4 4v24a4 4 0 0 1-4 4H30l-12 10v-10h-8a4 4 0 0 1-4-4V16a4 4 0 0 1 4-4z"/>'
+        '<path d="M20 25h24M20 33h16" stroke-linecap="round"/></svg>')
 
 PAGES = {
     "bellows": dict(
@@ -61,7 +65,8 @@ PAGES = {
         tiles_title="你将得到",
         tiles=[("文字正常显示", "旧补丁的汉化包无需修改。"), ("正确换行", "长段落不再闪退。"), ("自带字体", "游戏字体没有的文字由 Mei 补上。"), ("搜索和输入", "汉字、拼音和首字母。")],
         extra=["汉化 MOD", "尚未完成"],
-        labels=dict(install="安装", time="1 分钟", docs="文档", github="GITHUB", credits="致谢与许可", coll="HAPPY DWARF 的其他作品", collsub="Workshop 合集：我们所有的 EU4 插件"),
+        labels=dict(install="安装", time="1 分钟", docs="文档", github="GITHUB", credits="致谢与许可", coll="HAPPY DWARF 的其他作品", collsub="Workshop 合集：我们所有的 EU4 插件",
+                    discord="在 DISCORD 上找我们", discordsub="求助、报告错误和提建议：#help-and-bugs"),
     ),
     "mei-tchinese": dict(
         repo="mei", icon="mei", name="MEI 銘", tag="讓《歐陸風雲4》顯示中文、日文和韓文",
@@ -70,7 +75,8 @@ PAGES = {
         tiles_title="你將得到",
         tiles=[("文字正常顯示", "舊補丁的中文化包無需修改。"), ("正確換行", "長段落不再閃退。"), ("自帶字型", "遊戲字型沒有的文字由 Mei 補上。"), ("搜尋和輸入", "漢字、拼音和首字母。")],
         extra=["中文化 MOD", "尚未完成"],
-        labels=dict(install="安裝", time="1 分鐘", docs="文件", github="GITHUB", credits="致謝與授權", coll="HAPPY DWARF 的其他作品", collsub="Workshop 合集：我們所有的 EU4 外掛"),
+        labels=dict(install="安裝", time="1 分鐘", docs="文件", github="GITHUB", credits="致謝與授權", coll="HAPPY DWARF 的其他作品", collsub="Workshop 合集：我們所有的 EU4 外掛",
+                    discord="在 DISCORD 上找我們", discordsub="求助、回報錯誤和提建議：#help-and-bugs"),
     ),
 }
 
@@ -123,12 +129,15 @@ def shots():
         sub = lab.get("collsub", "All our EU4 plugins in one Workshop collection")
         suffix = key.split("-")[1] if "-" in key else "en"
         done.setdefault(f"collection-{suffix}", ("", f'<div class="coll"><span class="ic" style="width:64px;height:64px">{DWARF}</span><div class="ct"><div class="cn">{coll}</div><div class="cs">{sub}</div></div><span class="arrow">→</span></div>'))
+        talk = lab.get("discord", "ASK US ON DISCORD")
+        talksub = lab.get("discordsub", "Help, bugs and ideas: #help-and-bugs")
+        done.setdefault(f"discord-{suffix}", ("", f'<div class="coll"><span class="ic" style="width:44px;height:44px">{CHAT}</span><div class="ct"><div class="cn">{html.escape(talk)}</div><div class="cs">{html.escape(talksub)}</div></div><span class="arrow">→</span></div>'))
     return done
 
 
 # Transparent margins, in px, on Steam's fixed line layout (one line break between blocks): (top, bottom).
 MARGINS = (("-tiles-title", (20, 3)), ("-install", (20, 3)), ("-extra", (20, 3)), ("-faq", (20, 0)), ("-credits", (20, 0)),
-           ("collection-", (20, 0)), ("-hero", (0, 8)), ("-steps", (0, 8)), ("-tiles", (0, 8)))
+           ("collection-", (20, 0)), ("discord-", (8, 0)), ("-hero", (0, 8)), ("-steps", (0, 8)), ("-tiles", (0, 8)))
 
 
 def margins(name):
