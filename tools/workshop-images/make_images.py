@@ -29,10 +29,10 @@ DISCORD = (Path(__file__).parent / "discord-mark.svg").read_text(encoding="utf-8
 PAGES = {
     "bellows": dict(
         repo="bellows", icon="bellows", name="BELLOWS", tag="Faster EU4.",
-        stats=[("START", "41 → 13s", "10 mods, our test machine"), ("YEARS", "27 → 20s", "one save, 1720, speed 5")],
+        stats=[("START", "41 → 13s", "10 mods, our test machine"), ("YEARS", "27 → 17s", "one save, 1720, speed 5")],
         steps=[("Install Anvil", "Once. Run it, click Install Anvil."), ("Subscribe", "Enable Bellows in your playset."), ("Approve", "Ctrl+Shift+F12, Mods, approve."), ("Restart", "Done. Enjoy the shorter wait.")],
         tiles_title="WHAT IT DOESN'T TOUCH",
-        tiles=[("Same rules", "No game files or rules change."), ("Ironman stays", "The game still offers achievements."), ("Multiplayer", "Host only, 0.17: 233 days in sync."), ("Check it yourself", "Benchmark tab in Anvil Manager.")],
+        tiles=[("Same rules", "No game files or rules change."), ("Ironman stays", "The game still offers achievements."), ("Multiplayer", "Host only, 1.4: 203 days in sync."), ("Check it yourself", "Benchmark tab in Anvil Manager.")],
     ),
     "hamweard": dict(
         repo="hamweard", icon="hamweard", name="HAMWEARD", tag="Home to the menu. No restart.",
