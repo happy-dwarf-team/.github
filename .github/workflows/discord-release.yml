@@ -78,9 +78,11 @@ jobs:
                 | gsub("\n{3,}"; "\n\n")
                 | sub("^\n+"; "")
                 | sub("\n+$"; "");
-              def shorten($limit):
+              # Discord takes up to 4096 characters in an embed description. Longer
+              # notes are cut at the last whole line and end with a link to the release.
+              def shorten($limit; $url):
                 if length <= $limit then .
-                else (.[:$limit] | sub("\n[^\n]*$"; "")) + "\n…"
+                else (.[:$limit] | sub("\n[^\n]*$"; "")) + "\n…\n\n[Full notes on GitHub](\($url))"
                 end;
               {
                 avatar_url: "https://happydwarf.dev/logo.png",
@@ -88,7 +90,7 @@ jobs:
                 embeds: [{
                   title: $title,
                   url: .html_url,
-                  description: (notes | shorten(1800)),
+                  description: (.html_url as $url | notes | shorten(3800; $url)),
                   color: 16093738,
                   timestamp: .published_at
                 }]
