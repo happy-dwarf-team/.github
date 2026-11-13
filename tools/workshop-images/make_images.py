@@ -51,7 +51,7 @@ PAGES = {
     "mei": dict(
         repo="mei", icon="mei", name="MEI 銘", tag="Chinese, Japanese and Korean text in EU4.",
         stats=[("TEXT", "中 日 한", "menus, events, the map"), ("FONTS", "13,000", "characters, from Source Han Sans")],
-        steps=[("Remove old patch", "Delete version.dll, d3d9.dll, plugins."), ("Install Anvil", "Run Anvil Manager (link below), click Install Anvil."), ("Subscribe", "Mei and your translation mod."), ("Approve", "Ctrl+Shift+F12, Mods, approve."), ("Restart", "Nothing to configure.")],
+        steps=[("Install Anvil", "Run Anvil Manager (link below). Old patch? Click Replace."), ("Subscribe", "Mei and your translation mod."), ("Approve", "Ctrl+Shift+F12, Mods, approve."), ("Restart", "Nothing to configure.")],
         tiles_title="WHAT YOU GET",
         tiles=[("Text that shows", "Mods made for the old patch work as they are."), ("Proper line breaks", "No crash on a long paragraph."), ("Fonts included", "Where the game's own have none."), ("Search and typing", "Characters, pinyin, initials.")],
         extra=["TRANSLATION MODS", "NOT THERE YET"],
@@ -60,7 +60,7 @@ PAGES = {
     "mei-schinese": dict(
         repo="mei", icon="mei", name="MEI 銘", tag="让《欧陆风云4》显示中文、日文和韩文",
         stats=[("文字", "中 日 한", "菜单、事件和地图"), ("字体", "13,000", "个字，思源黑体")],
-        steps=[("删除旧补丁", "删除 version.dll、d3d9.dll 和 plugins。"), ("安装 Anvil", "运行 Anvil Manager（链接见下文），点击 Install Anvil。"), ("订阅", "Mei 和你的汉化 Mod。"), ("批准", "Ctrl+Shift+F12，Mods，批准。"), ("重启", "无需任何设置。")],
+        steps=[("安装 Anvil", "运行 Anvil Manager（链接见下文）。有旧补丁？点击“替换”。"), ("订阅", "Mei 和你的汉化 Mod。"), ("批准", "Ctrl+Shift+F12，Mods，批准。"), ("重启", "无需任何设置。")],
         tiles_title="你将得到",
         tiles=[("文字正常显示", "旧补丁的汉化包无需修改。"), ("正确换行", "长段落不再闪退。"), ("自带字体", "游戏字体没有的文字由 Mei 补上。"), ("搜索和输入", "汉字、拼音和首字母。")],
         extra=["汉化 MOD", "尚未完成"],
@@ -70,7 +70,7 @@ PAGES = {
     "mei-tchinese": dict(
         repo="mei", icon="mei", name="MEI 銘", tag="讓《歐陸風雲4》顯示中文、日文和韓文",
         stats=[("文字", "中 日 한", "選單、事件和地圖"), ("字型", "13,000", "個字，思源黑體")],
-        steps=[("刪除舊補丁", "刪除 version.dll、d3d9.dll 和 plugins。"), ("安裝 Anvil", "執行 Anvil Manager（連結見下文），點擊 Install Anvil。"), ("訂閱", "Mei 和你的中文化 Mod。"), ("核准", "Ctrl+Shift+F12，Mods，核准。"), ("重新啟動", "無需任何設定。")],
+        steps=[("安裝 Anvil", "執行 Anvil Manager（連結見下文）。有舊補丁？點擊「取代」。"), ("訂閱", "Mei 和你的中文化 Mod。"), ("核准", "Ctrl+Shift+F12，Mods，核准。"), ("重新啟動", "無需任何設定。")],
         tiles_title="你將得到",
         tiles=[("文字正常顯示", "舊補丁的中文化包無需修改。"), ("正確換行", "長段落不再閃退。"), ("自帶字型", "遊戲字型沒有的文字由 Mei 補上。"), ("搜尋和輸入", "漢字、拼音和首字母。")],
         extra=["中文化 MOD", "尚未完成"],
