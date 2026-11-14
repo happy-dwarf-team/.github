@@ -41,6 +41,13 @@ PAGES = {
         tiles_title="GOOD TO KNOW",
         tiles=[("Ironman", "On. Nothing to allow."), ("Multiplayer", "No return: the game restarts."), ("Canals", "A return puts the map back."), ("Your saves", "No plugin data in them.")],
     ),
+    "hoard": dict(
+        repo="hoard", icon="hoard", name="HOARD", tag="More autosaves than the game keeps.",
+        stats=[("KEEPS", "10 saves", "per campaign, plus 5 sittings"), ("A COPY", "< 0.1s", "of a 62 MB save, our test machine")],
+        steps=[("Install Anvil", "Once. Run it, click Install Anvil."), ("Subscribe", "Enable Hoard in your playset."), ("Approve", "Ctrl+Shift+F12, Mods, approve."), ("Restart", "Then just play. Saves get copied.")],
+        tiles_title="GOOD TO KNOW",
+        tiles=[("Same game", "It copies files. Nothing else."), ("Ironman", "Off by default. Your call."), ("Multiplayer", "Can't desync. Not tested yet."), ("Steam Cloud", "Cloud saves never reach it.")],
+    ),
     "tongs": dict(
         repo="tongs", icon="tongs", name="TONGS", tag="Scripts and AI agents, through the front door.",
         stats=[("SEE", "the game", "date, speed, windows, events"), ("PLAY", "if allowed", "input and console: a switch each")],
