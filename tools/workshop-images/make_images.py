@@ -32,7 +32,7 @@ PAGES = {
         stats=[("START", "41 → 13s", "10 mods, our test machine"), ("YEARS", "27 → 17s", "one save, 1720, speed 5")],
         steps=[("Install Anvil", "Run Anvil Manager (link below), click Install Anvil."), ("Subscribe", "Enable Bellows in your playset."), ("Approve", "Ctrl+Shift+F12, Mods, approve."), ("Restart", "Done. Enjoy the shorter wait.")],
         tiles_title="WHAT IT DOESN'T TOUCH",
-        tiles=[("Same rules", "No game files or rules change."), ("Ironman stays", "The game still offers achievements."), ("Multiplayer", "Optional for each player. Stays in sync."), ("Check it yourself", "Benchmark tab in Anvil Manager.")],
+        tiles=[("Ironman", "On. Achievements still allowed."), ("Multiplayer", "Works, optional for each player."), ("Same rules", "No game files or rules change."), ("Check it yourself", "Benchmark tab in Anvil Manager.")],
     ),
     "hamweard": dict(
         repo="hamweard", icon="hamweard", name="HAMWEARD", tag="Home to the menu. No restart.",
