@@ -45,13 +45,20 @@ Anvil plugins, in this order. A section that has nothing to say goes. Images com
 4. **Tiles:** a banner and four tiles: what the plugin leaves alone, or what the player should know. Limits that matter stay honest; a sentence of text under the tiles may carry what four tiles can't.
 5. **Sections a plugin needs of its own**, as a banner and text, such as Mei's translation mods.
 6. **Buttons:** `SETTINGS AND DOCS` to the plugin's page on the Anvil website, `VIEW ON GITHUB` to the repository. Settings, the benchmark and how the plugin works live there, not here. Below them, on its own line, the `ASK US ON DISCORD` button (`discord-en.png`, or the page's language) to <https://discord.happydwarf.dev/>. The FAQ keeps its text entry "Something's wrong. Where do I ask?" with the same link, for players who skip images.
-7. **FAQ:** banner and text. The usual questions, at least: why approve it, GOG, the name if it has a story, and last the dwarf head on the thumbnail.
+7. **FAQ:** banner and text. The standing questions: why approve it, GOG, "Something's wrong. Where do I ask?", the name if it has a story, and last the dwarf head on the thumbnail. Besides them, at most four questions of the plugin's own; [FAQ answers](#faq-answers) says how long each may be.
 8. **Credits:** banner and text, one line each, a bold name first. People and projects the plugin stands on come first, with their licence.
 9. **Collection button:** the image with the Happy Dwarf logo, linking to [our Workshop collection](https://steamcommunity.com/sharedfiles/filedetails/?id=3833899418). Content mods end with it too.
 
 Steam takes at most 8000 bytes of BBCode; an image adds about 60. Images stay under 1 MB. A translated page gets its own images.
 
 Content mods stay text: required mods, the game version, what the mod doesn't touch, link lists, FAQ, Credits, and the collection button at the end.
+
+### FAQ answers
+
+- **Short.** At most two sentences and about 250 characters (link text counts, the address does not); a dwarven tail of a few words may follow. The standing dwarf-head entry is the one exception.
+- **Answer first.** The first words answer the question: yes, no, or what to do.
+- **Only what a player asks** before installing or at their first problem. A question about one setting or module, a feature that is off by default, moving from an older version, or test results with their caveats belongs on the plugin's page on the Anvil website or in the changelog; the answer may link there.
+- **Translations** follow the English entries one to one.
 
 ### The standing FAQ entry
 
