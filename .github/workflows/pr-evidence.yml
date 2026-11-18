@@ -1,0 +1,51 @@
+name: pr-evidence
+
+# A pull request shows what it changes in its "## Evidence" section: screenshots
+# or a recording before and after, the API, log lines or cases (CONTRIBUTING.md,
+# "Evidence"). Projects call this workflow from pr-title.yml, which runs on
+# pull_request_target, so editing the description runs it again. The check reads
+# the current description from the API. Dependabot's and release-please's pull
+# requests are exempt.
+on:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  evidence:
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Check the Evidence section
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}
+        run: |
+          gh api "$PR_URL" > pr.json
+          python3 - pr.json <<'PY'
+          import json, re, sys
+
+          GUIDE = "https://github.com/happy-dwarf-team/.github/blob/main/CONTRIBUTING.md#evidence"
+          MIN_CHARS = 20
+
+          pr = json.load(open(sys.argv[1], encoding="utf-8"))
+          author, branch = pr["user"]["login"], pr["head"]["ref"]
+          if author == "dependabot[bot]" or branch.startswith("release-please--"):
+              print(f"Exempt: {author} on {branch}.")
+              sys.exit(0)
+
+          body = (pr.get("body") or "").replace("\r", "")
+          body = re.sub(r"<!--.*?-->", "", body, flags=re.S)
+          # The section runs to the next heading of level 1 or 2; its own ### subheadings stay in it.
+          match = re.search(r"^#{2,3}[ \t]+Evidence[ \t]*$(.*?)(?=^#{1,2}[ \t]|\Z)", body, flags=re.S | re.M | re.I)
+          if not match:
+              print(f"::error::The description has no '## Evidence' section. Show what the pull request changes: {GUIDE}")
+              sys.exit(1)
+          filled = len(re.sub(r"\s", "", match.group(1)))
+          if filled < MIN_CHARS:
+              print(f"::error::The '## Evidence' section is empty ({filled} characters outside comments). Show what the pull request changes: {GUIDE}")
+              sys.exit(1)
+          print(f"Evidence: {filled} characters.")
+          PY
