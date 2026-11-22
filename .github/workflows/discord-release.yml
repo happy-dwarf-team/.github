@@ -5,6 +5,11 @@ name: discord-release
 # release published with GITHUB_TOKEN starts no `release` workflow) and
 # website.yml in the plugins. Run it by hand to post a release again.
 #
+# A release whose notes are empty after the filter below (release-please could
+# not parse its PR, say) is not posted: the job leaves a warning and fails, so
+# the caller's run turns red. Fix the release notes, then run this workflow by
+# hand with the same tag.
+#
 # Needs the organization secret DISCORD_RELEASES_WEBHOOK, the URL of the webhook
 # in #releases. Without it the job leaves a notice and posts nothing.
 #
@@ -95,6 +100,11 @@ jobs:
                   timestamp: .published_at
                 }]
               }' release.json > payload.json
+            # A post with a title and no notes tells players nothing: fail before posting.
+            if ! jq -e '.embeds[0].description | test("\\S")' payload.json > /dev/null; then
+              echo "::warning::${REPOSITORY} ${TAG}: the release has no notes; nothing posted"
+              exit 1
+            fi
             # wait=true makes Discord return the message, whose ID the publish needs.
             if [[ "${WEBHOOK}" == *\?* ]]; then url="${WEBHOOK}&wait=true"; else url="${WEBHOOK}?wait=true"; fi
             curl --fail-with-body --silent --show-error --retry 3 --retry-all-errors \
